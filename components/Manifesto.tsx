@@ -13,6 +13,7 @@ const full = `${line1} ${line2}`;
 
 export default function Manifesto() {
   const ref = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -40,8 +41,51 @@ export default function Manifesto() {
     return () => ctx.revert();
   }, []);
 
+  /* Empilhamento: a seção anterior para no lugar e esta desliza por cima dela.
+
+     `pinSpacing: false` é o que produz a sobreposição — com o espaçamento
+     padrão o ScrollTrigger reservaria altura equivalente ao pin e as duas
+     continuariam lado a lado, só que com a anterior parada.
+
+     O intervalo vai de "topo desta seção na base da tela" até "topo desta
+     seção no topo da tela": começa exatamente quando a anterior termina de
+     entrar em cena e acaba quando esta a cobre por completo. */
+  useEffect(() => {
+    const sec = sectionRef.current;
+    if (!sec || prefersReducedMotion()) return;
+
+    /* A seção coberta é a irmã imediatamente anterior no fluxo da página.
+       Depois de um pin, porém, o ScrollTrigger embrulha o alvo num
+       `.pin-spacer` — que passa a ser a irmã anterior. Numa remontagem do
+       componente (Fast Refresh, StrictMode) prenderíamos o embrulho em vez
+       da seção, então desembrulhamos antes. */
+    const sibling = sec.previousElementSibling as HTMLElement | null;
+    if (!sibling) return;
+    const prev = sibling.classList.contains("pin-spacer")
+      ? (sibling.firstElementChild as HTMLElement | null)
+      : sibling;
+    if (!prev) return;
+
+    const st = ScrollTrigger.create({
+      trigger: sec,
+      start: "top bottom",
+      end: "top top",
+      pin: prev,
+      pinSpacing: false,
+      anticipatePin: 1,
+    });
+
+    return () => st.kill();
+  }, []);
+
   return (
-    <section className="section-orange notch-top relative overflow-hidden pb-32 pt-40 sm:pb-44 sm:pt-52">
+    <section
+      ref={sectionRef}
+      /* z-10: durante o pin a seção anterior vira `position: fixed`, e sem um
+         z explícito a ordem de pintura entre as duas passa a depender só da
+         ordem no DOM. */
+      className="section-orange notch-top relative z-10 overflow-hidden pb-32 pt-40 sm:pb-44 sm:pt-52"
+    >
       {/* Feixe de luz de fibra ao fundo */}
       <div
         aria-hidden
