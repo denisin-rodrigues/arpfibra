@@ -133,7 +133,7 @@ export default function Hero() {
               Fibra óptica para o seu dia a dia
             </p>
 
-            <h1 className="text-hero-compact -translate-y-[10%] font-bold lg:translate-y-0">
+            <h1 className="text-hero-compact -translate-y-[30%] font-bold lg:translate-y-0">
               <span data-hero className="text-glow">
                 Sua vida acontece rápido.
               </span>{" "}
