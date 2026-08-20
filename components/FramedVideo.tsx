@@ -169,7 +169,7 @@ export default function FramedVideo() {
               ele era revertido para fundo transparente porque o palco ali era
               branco; com o palco escuro (Hyperspeed) o título ficava quase da
               mesma cor do fundo. Só o deslocamento segue exclusivo do mobile. */}
-          <div className="-translate-y-[105%] rounded-[2rem] border border-white/60 bg-white/90 px-5 py-6 text-center shadow-[0_20px_60px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:translate-y-0 lg:px-10 lg:py-9">
+          <div className="-translate-y-[105%] rounded-[2rem] border border-white/60 bg-white/90 px-5 py-6 text-center shadow-[0_20px_60px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:translate-x-[40%] lg:translate-y-0 lg:px-10 lg:py-9">
             <p className="text-eyebrow mb-3 text-orange lg:mb-4">
               Conecte. Relaxe. A ARP cuida do resto.
             </p>
