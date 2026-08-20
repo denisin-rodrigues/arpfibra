@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Icon } from "@iconify/react";
 import { site } from "@/lib/site";
-import BrandMark from "./BrandMark";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -47,13 +47,17 @@ export default function Navbar() {
       >
         <a
           href="#top"
-          className="relative flex items-center gap-2.5 rounded-lg"
+          className="relative flex items-center rounded-lg"
           aria-label="ARP Fibra — início"
         >
-          <BrandMark className="h-7 w-7" />
-          <span className="font-display text-lg font-bold tracking-tight text-text">
-            arp<span className="text-orange">fibra</span>
-          </span>
+          <Image
+            src="/logo-arp.png"
+            alt="ARP Fibra"
+            width={210}
+            height={70}
+            priority
+            className="h-8 w-auto sm:h-9"
+          />
         </a>
 
         <ul className="relative hidden items-center gap-1 md:flex">
