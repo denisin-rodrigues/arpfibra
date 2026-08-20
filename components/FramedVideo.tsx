@@ -93,15 +93,26 @@ export default function FramedVideo() {
           { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "power2.inOut" },
           0
         );
-        // Intro (título) desliza para fora conforme rola.
-        tl.to(intro.current, { autoAlpha: 0, y: -30, ease: "none" }, 0);
-        // Frases de conforto surgem quando o vídeo já preencheu a tela.
-        tl.fromTo(
-          overlay.current,
-          { autoAlpha: 0, y: 40 },
-          { autoAlpha: 1, y: 0, ease: "power2.out" },
-          0.55
-        );
+        if (isDesktop) {
+          /* Os dois cards ladeiam o frame do vídeo e nascem visíveis juntos.
+             Saem de cena junto com o crescimento do vídeo — é isso que impede
+             que acabem por cima dele quando ele passa a sangrar a tela. */
+          gsap.set(overlay.current, { autoAlpha: 1, y: 0 });
+          tl.to(
+            [intro.current, overlay.current],
+            { autoAlpha: 0, y: -30, ease: "none" },
+            0
+          );
+        } else {
+          // Mobile: sequência original — intro sai, frases entram depois.
+          tl.to(intro.current, { autoAlpha: 0, y: -30, ease: "none" }, 0);
+          tl.fromTo(
+            overlay.current,
+            { autoAlpha: 0, y: 40 },
+            { autoAlpha: 1, y: 0, ease: "power2.out" },
+            0.55
+          );
+        }
       }
     );
 
@@ -163,13 +174,12 @@ export default function FramedVideo() {
             no filho porque o GSAP controla o transform do elemento com ref. */}
         <div
           ref={intro}
-          className="pointer-events-none absolute z-20 w-full max-w-2xl px-5"
+          className="pointer-events-none absolute z-20 w-full max-w-2xl px-5 lg:left-[2.5%] lg:top-1/2 lg:w-[20%] lg:max-w-none lg:-translate-y-1/2 lg:px-0 xl:left-[4%] xl:w-[22%]"
         >
-          {/* O painel liquid glass agora vale nos dois breakpoints. No desktop
-              ele era revertido para fundo transparente porque o palco ali era
-              branco; com o palco escuro (Hyperspeed) o título ficava quase da
-              mesma cor do fundo. Só o deslocamento segue exclusivo do mobile. */}
-          <div className="-translate-y-[105%] rounded-[2rem] border border-white/60 bg-white/90 px-5 py-6 text-center shadow-[0_20px_60px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:translate-x-[40%] lg:translate-y-0 lg:px-10 lg:py-9">
+          {/* O painel liquid glass vale nos dois breakpoints: com o palco
+              escuro (Hyperspeed), o título ficaria quase da mesma cor do fundo
+              sem ele. O deslocamento -105% segue exclusivo do mobile. */}
+          <div className="-translate-y-[105%] rounded-[2rem] border border-white/60 bg-white/90 px-5 py-6 text-center shadow-[0_20px_60px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:translate-y-0 lg:px-6 lg:py-7">
             <p className="text-eyebrow mb-3 text-orange lg:mb-4">
               Conecte. Relaxe. A ARP cuida do resto.
             </p>
@@ -186,16 +196,16 @@ export default function FramedVideo() {
             sobre o vídeo, com texto branco (já tem scrim escuro por trás). */}
         <div
           ref={overlay}
-          className="absolute bottom-0 z-20 w-full max-w-2xl px-5 pb-10 text-center lg:max-w-3xl lg:px-6 lg:pb-16"
+          className="absolute bottom-0 z-20 w-full max-w-2xl px-5 pb-10 text-center lg:bottom-auto lg:left-auto lg:right-[2.5%] lg:top-1/2 lg:w-[20%] lg:max-w-none lg:-translate-y-1/2 lg:px-0 lg:pb-0 xl:right-[4%] xl:w-[22%]"
           style={{ visibility: "hidden" }}
         >
-          <div className="rounded-[2rem] border border-white/60 bg-white/90 px-5 py-6 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none">
-            <div className="mb-4 flex flex-wrap justify-center gap-x-3 gap-y-1 font-display text-sm font-medium text-[#1b1410] sm:text-base lg:mb-6 lg:gap-x-6 lg:text-xl lg:text-white">
+          <div className="rounded-[2rem] border border-white/60 bg-white/90 px-5 py-6 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:px-6 lg:py-7">
+            <div className="mb-4 flex flex-wrap justify-center gap-x-3 gap-y-1 font-display text-sm font-medium text-[#1b1410] sm:text-base lg:mb-5 lg:gap-x-3 lg:text-base">
               {scenes.map((s) => (
                 <span key={s}>{s}</span>
               ))}
             </div>
-            <p className="mb-5 font-display text-lg font-semibold text-orange sm:text-xl lg:mb-8 lg:text-2xl">
+            <p className="mb-5 font-display text-lg font-semibold text-orange sm:text-xl lg:mb-6 lg:text-lg">
               E você? Só aproveitando.
             </p>
             <a
