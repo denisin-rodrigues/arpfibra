@@ -12,6 +12,7 @@ import SocialProof from "@/components/SocialProof";
 import FinalCta from "@/components/FinalCta";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import ProgressiveBlur from "@/components/ProgressiveBlur";
 
 export default function Home() {
   return (
@@ -31,6 +32,7 @@ export default function Home() {
         <FinalCta />
       </main>
       <Footer />
+      <ProgressiveBlur />
       <FloatingWhatsApp />
     </>
   );

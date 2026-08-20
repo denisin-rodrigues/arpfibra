@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { Icon } from "@iconify/react";
-import { SplitHeading, Reveal } from "./Reveal";
+import { Reveal } from "./Reveal";
+import ScrollReveal from "./ScrollReveal";
 
 const reasons = [
   "É trabalho que não pode parar.",
@@ -45,20 +46,17 @@ export default function Positioning() {
     <section className="relative mx-auto max-w-6xl px-5 py-28 sm:py-36">
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
         <div>
-          <Reveal as="p" className="text-eyebrow mb-5 text-orange">
-            Por que ARP Fibra?
-          </Reveal>
-          <SplitHeading
-            as="h2"
-            className="text-section font-bold"
-            text="Tecnologia para conectar."
-          />
-          <SplitHeading
-            as="h2"
-            className="text-section font-bold text-text-dim"
-            text="Atendimento para aproximar."
-            delay={0.15}
-          />
+          <ScrollReveal direction="up" delay={0}>
+            <p className="text-eyebrow mb-5 text-orange">Por que ARP Fibra?</p>
+          </ScrollReveal>
+          <ScrollReveal direction="up" delay={150}>
+            <h2 className="text-section font-bold">Tecnologia para conectar.</h2>
+          </ScrollReveal>
+          <ScrollReveal direction="up" delay={300}>
+            <h2 className="text-section font-bold text-text-dim">
+              Atendimento para aproximar.
+            </h2>
+          </ScrollReveal>
         </div>
         <div className="flex flex-col justify-center">
           <Reveal as="p" className="text-lg leading-relaxed text-text-dim">
@@ -80,9 +78,10 @@ export default function Positioning() {
       {/* Cards */}
       <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c, i) => (
-          <Reveal
+          <ScrollReveal
             key={c.title}
-            delay={i * 0.08}
+            direction="up"
+            delay={i * 150}
             className="border-gradient group relative rounded-2xl p-6 transition-transform duration-300 hover:-translate-y-1"
           >
             <div className="mb-5 inline-flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl bg-orange/10 transition-colors group-hover:bg-orange/20">
@@ -90,7 +89,7 @@ export default function Positioning() {
             </div>
             <h3 className="mb-2 font-display text-lg font-semibold">{c.title}</h3>
             <p className="text-sm leading-relaxed text-text-dim">{c.text}</p>
-          </Reveal>
+          </ScrollReveal>
         ))}
       </div>
     </section>

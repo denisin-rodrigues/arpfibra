@@ -1,41 +1,12 @@
-"use client";
-
-import { useEffect, useRef } from "react";
 import { Icon } from "@iconify/react";
-import { gsap } from "gsap";
 import { site } from "@/lib/site";
+import ScrollReveal from "./ScrollReveal";
 
 const micro = ["Fibra óptica", "Planos ilimitados", "Wi-Fi", "Suporte ARP"];
 
 export default function Hero() {
-  const root = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = root.current;
-    if (!el) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const targets = el.querySelectorAll<HTMLElement>("[data-hero]");
-    if (reduce) {
-      gsap.set(targets, { opacity: 1, y: 0 });
-      return;
-    }
-    const ctx = gsap.context(() => {
-      gsap.set(targets, { opacity: 0, y: 30 });
-      const tl = gsap.timeline({ delay: 0.25 });
-      tl.to(targets, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: "power3.out",
-        stagger: 0.12,
-      });
-    }, el);
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
-      ref={root}
       id="top"
       className="text-invert relative flex min-h-[100svh] flex-col overflow-hidden pt-36 lg:pt-28"
     >
@@ -122,72 +93,78 @@ export default function Hero() {
             Desktop (lg+): título e subtítulo lado a lado no topo; microbenefícios
             e CTAs numa segunda "linha" ancorada embaixo, perto dos pés do personagem. */}
         <div className="flex flex-1 flex-col lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-10 lg:gap-y-8">
-          {/* HEAD */}
+          {/* HEAD — badge e título entram da esquerda, escalonados */}
           <div className="mx-auto max-w-sm pt-2 text-center lg:mx-0 lg:max-w-lg lg:-translate-x-[85%]">
-            <p
-              data-hero
-              className="text-eyebrow mb-5 hidden w-fit items-center gap-2 bg-white px-4 py-2 text-orange-deep shadow-[0_4px_16px_-4px_rgba(0,0,0,0.35)] lg:inline-flex lg:mx-auto"
-              style={{ fontSize: "0.8rem" }}
-            >
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-orange" />
-              Fibra óptica para o seu dia a dia
-            </p>
+            <ScrollReveal direction="left" delay={0}>
+              <p
+                className="text-eyebrow mb-5 hidden w-fit items-center gap-2 bg-white px-4 py-2 text-orange-deep shadow-[0_4px_16px_-4px_rgba(0,0,0,0.35)] lg:inline-flex lg:mx-auto"
+                style={{ fontSize: "0.8rem" }}
+              >
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-orange" />
+                Fibra óptica para o seu dia a dia
+              </p>
+            </ScrollReveal>
 
-            <h1 className="text-hero-compact -translate-y-[50%] font-bold lg:translate-y-0">
-              <span data-hero className="text-glow">
-                Sua vida acontece rápido.
-              </span>{" "}
-              <span data-hero className="text-text-dim">
-                Sua internet também deveria.
-              </span>
-            </h1>
+            <ScrollReveal direction="left" delay={150}>
+              <h1 className="text-hero-compact -translate-y-[50%] font-bold lg:translate-y-0">
+                <span className="text-glow">Sua vida acontece rápido.</span>{" "}
+                <span className="text-text-dim">Sua internet também deveria.</span>
+              </h1>
+            </ScrollReveal>
           </div>
 
-          {/* SUBHEAD — no mobile, mt-auto empurra ela (e tudo que vem depois,
-              já que seguem logo abaixo no fluxo) para perto da base; no
-              desktop fica ao lado do título. */}
-          <p
-            data-hero
-            className="mx-auto mt-auto max-w-[24rem] text-center text-base leading-relaxed text-text-dim lg:mx-0 lg:mt-0 lg:translate-x-[79%] lg:text-xl"
+          {/* SUBHEAD — elemento do lado direito, entra da direita.
+              No mobile, mt-auto empurra ela (e tudo que vem depois, já que
+              seguem logo abaixo no fluxo) para perto da base; no desktop
+              fica ao lado do título. */}
+          <ScrollReveal
+            direction="right"
+            delay={300}
+            duration={800}
+            className="mx-auto mt-auto max-w-[24rem] lg:mx-0 lg:mt-0"
           >
-            Trabalhe, estude, jogue, assista e conecte todos os seus
-            dispositivos com uma internet preparada para acompanhar o seu ritmo.
-          </p>
+            <p className="text-center text-base leading-relaxed text-text-dim lg:translate-x-[79%] lg:text-xl">
+              Trabalhe, estude, jogue, assista e conecte todos os seus
+              dispositivos com uma internet preparada para acompanhar o seu ritmo.
+            </p>
+          </ScrollReveal>
 
           {/* Base: CTAs + microbenefícios, com mais respiro interno.
               No mobile ficam nessa ordem; no desktop invertem
               (microbenefícios em cima) via flex-col-reverse. */}
           <div className="mt-8 flex flex-col items-center gap-7 pb-2 lg:mt-auto lg:w-full lg:flex-col-reverse lg:gap-6 lg:pb-0">
-            <div data-hero className="flex flex-row items-center justify-center gap-2 sm:gap-3">
-              <a href="#combos" className="btn btn-sm btn-primary btn-shine rounded-lg">
-                <Icon icon="solar:widget-5-bold" className="text-base sm:text-lg" />
-                Ver combos
-              </a>
-              <a
-                href={site.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-sm btn-white rounded-lg"
-              >
-                <Icon icon="solar:chat-round-call-bold" className="text-lg" />
-                Falar com a ARP
-              </a>
-            </div>
+            <ScrollReveal direction="left" delay={300}>
+              <div className="flex flex-row items-center justify-center gap-2 sm:gap-3">
+                <a href="#combos" className="btn btn-sm btn-primary btn-shine rounded-lg">
+                  <Icon icon="solar:widget-5-bold" className="text-base sm:text-lg" />
+                  Ver combos
+                </a>
+                <a
+                  href={site.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-sm btn-white rounded-lg"
+                >
+                  <Icon icon="solar:chat-round-call-bold" className="text-lg" />
+                  Falar com a ARP
+                </a>
+              </div>
+            </ScrollReveal>
 
-            <ul
-              data-hero
-              className="no-scrollbar flex w-full max-w-full flex-nowrap items-center justify-center gap-x-1.5 overflow-x-auto text-[10px] text-text-faint lg:w-auto lg:flex-wrap lg:gap-x-5 lg:gap-y-2 lg:overflow-visible lg:text-base"
-            >
-              {micro.map((m, i) => (
-                <li key={m} className="flex shrink-0 items-center gap-1.5 lg:gap-5">
-                  {i > 0 && <span className="text-orange/50">•</span>}
-                  <span className="flex items-center gap-1 lg:gap-1.5">
-                    <Icon icon="solar:check-circle-bold" className="text-[10px] text-orange lg:text-base" />
-                    {m}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {/* Marcadores de credibilidade */}
+            <ScrollReveal direction="up" delay={600} className="w-full lg:w-auto">
+              <ul className="no-scrollbar flex w-full max-w-full flex-nowrap items-center justify-center gap-x-1.5 overflow-x-auto text-[10px] text-text-faint lg:w-auto lg:flex-wrap lg:gap-x-5 lg:gap-y-2 lg:overflow-visible lg:text-base">
+                {micro.map((m, i) => (
+                  <li key={m} className="flex shrink-0 items-center gap-1.5 lg:gap-5">
+                    {i > 0 && <span className="text-orange/50">•</span>}
+                    <span className="flex items-center gap-1 lg:gap-1.5">
+                      <Icon icon="solar:check-circle-bold" className="text-[10px] text-orange lg:text-base" />
+                      {m}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </ScrollReveal>
           </div>
         </div>
       </div>
