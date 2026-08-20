@@ -131,8 +131,9 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Rodapé legal */}
-        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-line pt-7 text-sm text-text-faint sm:flex-row">
+        {/* Rodapé legal — z acima do ProgressiveBlur (fixo na base da
+            tela) para o texto não ficar borrado na última seção. */}
+        <div className="relative z-[1000] mt-14 flex flex-col items-center justify-between gap-4 border-t border-line pt-7 text-sm text-text-faint sm:flex-row">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <a href="#" className="transition-colors hover:text-text">Política de Privacidade</a>
             <a href="#" className="transition-colors hover:text-text">Termos de Uso</a>
