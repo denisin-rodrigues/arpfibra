@@ -27,6 +27,7 @@ export default function FramedVideo() {
   const overlay = useRef<HTMLDivElement>(null);
   const intro = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLDivElement>(null);
+  const frameInner = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
 
   /* O `media` das <source> só é avaliado no carregamento. Ao cruzar o
@@ -69,13 +70,22 @@ export default function FramedVideo() {
           isMobile: boolean;
         };
 
-        /* Recorte inicial do vídeo: um card centralizado que cresce até
-           sangrar a tela. No desktop o elemento já é um 16:9 da altura do
-           palco, então precisa de um recorte lateral maior que no mobile,
-           onde ele ocupa a tela inteira em 9:16. */
+        /* Recorte inicial: um card centralizado que cresce até sangrar a tela.
+
+           No desktop os quatro lados usam a MESMA porcentagem de propósito.
+           O elemento é 16:9, então recorte igual em todos os lados devolve
+           uma janela também 16:9 — a mesma proporção do vídeo. É isso que
+           permite encolher o conteúdo para caber exatamente nela e mostrar
+           o quadro inteiro, sem tarja e sem corte. Valores diferentes por
+           eixo (como no mobile) recortariam o vídeo. */
+        const startInset = isDesktop ? 33 : null;
         const startClip = isDesktop
-          ? "inset(23% 33% 23% 33% round 28px)"
+          ? `inset(${startInset}% ${startInset}% ${startInset}% ${startInset}% round 28px)`
           : "inset(26% 19% 26% 19% round 28px)";
+        // Fração visível da janela = 1 - 2 * inset. O conteúdo escala nesse
+        // mesmo valor, e como ambos usam o mesmo easing eles ficam em sincronia
+        // em todos os pontos do scrub, não só nas pontas.
+        const startScale = isDesktop ? 1 - (2 * startInset!) / 100 : 1;
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -93,6 +103,14 @@ export default function FramedVideo() {
           { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "power2.inOut" },
           0
         );
+        if (isDesktop) {
+          tl.fromTo(
+            frameInner.current,
+            { scale: startScale },
+            { scale: 1, ease: "power2.inOut" },
+            0
+          );
+        }
         if (isDesktop) {
           /* Os dois cards ladeiam o frame do vídeo e nascem visíveis juntos.
              Saem de cena junto com o crescimento do vídeo — é isso que impede
@@ -147,27 +165,33 @@ export default function FramedVideo() {
              os eixos, `relative` não desloca nada no desktop. */
           className="fv-video-mask absolute inset-0 z-10 lg:relative lg:aspect-video lg:h-full lg:w-auto lg:max-w-none"
         >
-          <video
-            ref={video}
-            className="h-full w-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="none"
-            aria-hidden="true"
-          >
-            <source src="/video-section2.mp4" media="(min-width: 1024px)" type="video/mp4" />
-            <source src="/segundovideo.mp4" type="video/mp4" />
-          </video>
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(0deg, rgba(8,8,10,0.85) 0%, rgba(8,8,10,0) 45%)",
-            }}
-          />
+          {/* Wrapper que encolhe junto com a janela do clip-path. Sem ele o
+              vídeo ficaria em tamanho real e o recorte mostraria só o miolo,
+              cortando as bordas do quadro. Leva o véu escuro junto para o
+              gradiente encolher na mesma proporção. */}
+          <div ref={frameInner} className="relative h-full w-full">
+            <video
+              ref={video}
+              className="h-full w-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="none"
+              aria-hidden="true"
+            >
+              <source src="/video-section2.mp4" media="(min-width: 1024px)" type="video/mp4" />
+              <source src="/segundovideo.mp4" type="video/mp4" />
+            </video>
+            <div
+              aria-hidden
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(0deg, rgba(8,8,10,0.85) 0%, rgba(8,8,10,0) 45%)",
+              }}
+            />
+          </div>
         </div>
 
         {/* Título introdutório. O deslocamento e o painel "liquid glass" ficam
