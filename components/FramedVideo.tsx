@@ -28,7 +28,6 @@ export default function FramedVideo() {
   const intro = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLDivElement>(null);
   const frameInner = useRef<HTMLDivElement>(null);
-  const edgeBlend = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
 
   /* O `media` das <source> só é avaliado no carregamento. Ao cruzar o
@@ -71,22 +70,14 @@ export default function FramedVideo() {
           isMobile: boolean;
         };
 
-        /* Recorte inicial: um card centralizado que cresce até sangrar a tela.
-
-           No desktop os quatro lados usam a MESMA porcentagem de propósito.
-           O elemento é 16:9, então recorte igual em todos os lados devolve
-           uma janela também 16:9 — a mesma proporção do vídeo. É isso que
-           permite encolher o conteúdo para caber exatamente nela e mostrar
-           o quadro inteiro, sem tarja e sem corte. Valores diferentes por
-           eixo (como no mobile) recortariam o vídeo. */
-        const startInset = isDesktop ? 33 : null;
-        const startClip = isDesktop
-          ? `inset(${startInset}% ${startInset}% ${startInset}% ${startInset}% round 28px)`
-          : "inset(26% 19% 26% 19% round 28px)";
-        // Fração visível da janela = 1 - 2 * inset. O conteúdo escala nesse
-        // mesmo valor, e como ambos usam o mesmo easing eles ficam em sincronia
-        // em todos os pontos do scrub, não só nas pontas.
-        const startScale = isDesktop ? 1 - (2 * startInset!) / 100 : 1;
+        const stageEl = sec.querySelector<HTMLElement>(".fv-stage")!;
+        /* Largura que o quadro 16:9 precisa ter para COBRIR o palco. Numa tela
+           mais larga que 16:9 quem manda é a largura; numa mais alta, a altura.
+           É o mesmo cálculo do `object-fit: cover`, feito à mão porque aqui
+           quem cresce é a caixa, não o conteúdo dentro dela. */
+        const coverWidth = () =>
+          Math.max(stageEl.clientWidth, (stageEl.clientHeight * 16) / 9);
+        const CARD_WIDTH = 550;
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -95,31 +86,34 @@ export default function FramedVideo() {
             end: "bottom bottom",
             scrub: 0.8,
             pin: ".fv-stage",
+            // coverWidth() é lido por função: precisa ser recalculado quando
+            // o ScrollTrigger remede a página (resize, fontes carregando).
+            invalidateOnRefresh: true,
           },
         });
 
-        tl.fromTo(
-          frame.current,
-          { clipPath: startClip },
-          { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "power2.inOut" },
-          0
-        );
         if (isDesktop) {
+          /* O quadro é uma caixa 16:9 já dimensionada para cobrir o palco;
+             escalá-la até 1 faz o vídeo sangrar a tela inteira, sem sobrar
+             faixa de palco nas laterais. Como a caixa é 16:9 e o vídeo também,
+             o quadro aparece inteiro em qualquer ponto da escala. */
           tl.fromTo(
             frameInner.current,
-            { scale: startScale },
+            { scale: () => CARD_WIDTH / coverWidth() },
             { scale: 1, ease: "power2.inOut" },
             0
           );
-          // O disfarce das laterais só faz sentido quando o vídeo já alcançou
-          // as bordas da tela, então entra junto com a expansão.
+        } else {
+          // Mobile: o vídeo é vertical e já preenche a tela, então basta abrir
+          // a janela do recorte.
           tl.fromTo(
-            edgeBlend.current,
-            { opacity: 0 },
-            { opacity: 1, ease: "power2.inOut" },
+            frame.current,
+            { clipPath: "inset(26% 19% 26% 19% round 28px)" },
+            { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "power2.inOut" },
             0
           );
         }
+
         if (isDesktop) {
           /* Os dois cards ladeiam o frame do vídeo e nascem visíveis juntos.
              Saem de cena junto com o crescimento do vídeo — é isso que impede
@@ -169,16 +163,21 @@ export default function FramedVideo() {
             texto) fica restrito ao vídeo, sem invadir as faixas brancas. */}
         <div
           ref={frame}
-          /* lg:relative (em vez de lg:static) só para o z-10 valer e o vídeo
-             ficar acima do canvas do Hyperspeed; com inset-0 zerado em ambos
-             os eixos, `relative` não desloca nada no desktop. */
-          className="fv-video-mask absolute inset-0 z-10 lg:relative lg:aspect-video lg:h-full lg:w-auto lg:max-w-none"
+          /* Ocupa o palco inteiro nos dois breakpoints. No desktop ele deixou
+             de ter o tamanho exato do vídeo: era isso que fazia sobrar faixa
+             de palco preto nas laterais em telas mais largas que 16:9. */
+          className="fv-video-mask absolute inset-0 z-10 overflow-hidden lg:flex lg:items-center lg:justify-center"
         >
-          {/* Wrapper que encolhe junto com a janela do clip-path. Sem ele o
-              vídeo ficaria em tamanho real e o recorte mostraria só o miolo,
-              cortando as bordas do quadro. Leva o véu escuro junto para o
-              gradiente encolher na mesma proporção. */}
-          <div ref={frameInner} className="relative h-full w-full">
+          {/* No desktop esta é a caixa que cresce: 16:9 como o vídeo (então o
+              quadro nunca é cortado) e larga o bastante para cobrir o palco
+              quando a escala chega a 1. `max(100%, 177.8svh)` é o mesmo
+              max(largura, altura × 16/9) usado no JS. O arredondamento e o
+              overflow ficam aqui — dispensam o clip-path no desktop.
+              No mobile segue sendo só o wrapper do vídeo vertical. */}
+          <div
+            ref={frameInner}
+            className="relative h-full w-full lg:aspect-video lg:h-auto lg:w-[max(100%,177.8svh)] lg:overflow-hidden lg:rounded-[2rem]"
+          >
             <video
               ref={video}
               className="h-full w-full object-cover"
@@ -202,25 +201,6 @@ export default function FramedVideo() {
             />
           </div>
         </div>
-
-        {/* Disfarce branco nas laterais, no lugar da tarja preta que a máscara
-            do vídeo desenhava contra o palco escuro. Fica ancorado no PALCO, e
-            não dentro do vídeo: a máscara tem 1618px de largura contra ~1381 de
-            tela, então um gradiente preso a ela cairia fora da área visível.
-            Entra só conforme o vídeo abre (opacidade animada) — no tamanho de
-            card não haveria borda de tela para disfarçar.
-            rgba(255,255,255,0) em vez da palavra `transparent`, que o navegador
-            interpola em direção ao preto e devolveria a franja escura de volta. */}
-        <div
-          ref={edgeBlend}
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-[15] hidden lg:block"
-          style={{
-            opacity: 0,
-            background:
-              "linear-gradient(to right, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 9%, rgba(255,255,255,0) 91%, rgba(255,255,255,0.5) 100%)",
-          }}
-        />
 
         {/* Título introdutório. O deslocamento e o painel "liquid glass" ficam
             no filho porque o GSAP controla o transform do elemento com ref. */}
