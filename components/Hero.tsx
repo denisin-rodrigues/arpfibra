@@ -133,7 +133,7 @@ export default function Hero() {
               Fibra óptica para o seu dia a dia
             </p>
 
-            <h1 className="text-hero-compact -translate-y-[30%] font-bold lg:translate-y-0">
+            <h1 className="text-hero-compact -translate-y-[50%] font-bold lg:translate-y-0">
               <span data-hero className="text-glow">
                 Sua vida acontece rápido.
               </span>{" "}
@@ -176,7 +176,7 @@ export default function Hero() {
 
             <ul
               data-hero
-              className="no-scrollbar flex w-full max-w-full flex-nowrap items-center justify-start gap-x-1.5 overflow-x-auto text-[10px] text-text-faint lg:w-auto lg:flex-wrap lg:justify-center lg:gap-x-5 lg:gap-y-2 lg:overflow-visible lg:text-base"
+              className="no-scrollbar flex w-full max-w-full flex-nowrap items-center justify-center gap-x-1.5 overflow-x-auto text-[10px] text-text-faint lg:w-auto lg:flex-wrap lg:gap-x-5 lg:gap-y-2 lg:overflow-visible lg:text-base"
             >
               {micro.map((m, i) => (
                 <li key={m} className="flex shrink-0 items-center gap-1.5 lg:gap-5">
