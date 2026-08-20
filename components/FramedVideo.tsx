@@ -19,6 +19,7 @@ export default function FramedVideo() {
   const section = useRef<HTMLDivElement>(null);
   const overlay = useRef<HTMLDivElement>(null);
   const intro = useRef<HTMLDivElement>(null);
+  const frame = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
 
   /* O `media` das <source> só é avaliado no carregamento. Ao cruzar o
@@ -36,32 +37,64 @@ export default function FramedVideo() {
   useEffect(() => {
     const sec = section.current;
     if (!sec) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce) return; // Estados finais (definidos no CSS) já bastam.
 
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sec,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 0.8,
-          pin: ".fv-stage",
-        },
-      });
+    const mm = gsap.matchMedia(sec);
 
-      // Intro (título) desliza para fora conforme rola.
-      tl.to(intro.current, { autoAlpha: 0, y: -30, ease: "none" }, 0);
-      // Frases de conforto surgem sobre o vídeo de fundo.
-      tl.fromTo(
-        overlay.current,
-        { autoAlpha: 0, y: 40 },
-        { autoAlpha: 1, y: 0, ease: "power2.out" },
-        0.55
-      );
-    }, sec);
+    mm.add(
+      {
+        isDesktop: "(min-width: 1024px)",
+        reduce: "(prefers-reduced-motion: reduce)",
+      },
+      (ctx) => {
+        const { isDesktop, reduce } = ctx.conditions as {
+          isDesktop: boolean;
+          reduce: boolean;
+        };
 
-    return () => ctx.revert();
+        if (reduce) {
+          // Sem animação: o vídeo já sangra a tela pelo CSS, mas as frases
+          // de conforto nascem com visibility:hidden e só o GSAP as revela.
+          gsap.set(overlay.current, { autoAlpha: 1, y: 0 });
+          return;
+        }
+
+        /* Recorte inicial do vídeo: um card centralizado que cresce até
+           sangrar a tela. No desktop o elemento já é um 16:9 da altura do
+           palco, então precisa de um recorte lateral maior que no mobile,
+           onde ele ocupa a tela inteira em 9:16. */
+        const startClip = isDesktop
+          ? "inset(23% 33% 23% 33% round 28px)"
+          : "inset(26% 19% 26% 19% round 28px)";
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sec,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.8,
+            pin: ".fv-stage",
+          },
+        });
+
+        tl.fromTo(
+          frame.current,
+          { clipPath: startClip },
+          { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "power2.inOut" },
+          0
+        );
+        // Intro (título) desliza para fora conforme rola.
+        tl.to(intro.current, { autoAlpha: 0, y: -30, ease: "none" }, 0);
+        // Frases de conforto surgem quando o vídeo já preencheu a tela.
+        tl.fromTo(
+          overlay.current,
+          { autoAlpha: 0, y: 40 },
+          { autoAlpha: 1, y: 0, ease: "power2.out" },
+          0.55
+        );
+      }
+    );
+
+    return () => mm.revert();
   }, []);
 
   return (
@@ -78,7 +111,10 @@ export default function FramedVideo() {
         {/* O wrapper tem o tamanho exato do vídeo no desktop: assim a máscara
             esfuma as bordas reais dele e o véu escuro (que dá contraste ao
             texto) fica restrito ao vídeo, sem invadir as faixas brancas. */}
-        <div className="fv-video-mask absolute inset-0 lg:static lg:aspect-video lg:h-full lg:w-auto lg:max-w-none">
+        <div
+          ref={frame}
+          className="fv-video-mask absolute inset-0 lg:static lg:aspect-video lg:h-full lg:w-auto lg:max-w-none"
+        >
           <video
             ref={video}
             className="h-full w-full object-cover"
@@ -152,3 +188,4 @@ export default function FramedVideo() {
     </section>
   );
 }
+
