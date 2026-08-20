@@ -1,6 +1,6 @@
+import Image from "next/image";
 import { Icon } from "@iconify/react";
 import { site } from "@/lib/site";
-import BrandMark from "./BrandMark";
 
 const columns = [
   {
@@ -50,12 +50,13 @@ export default function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           {/* Marca */}
           <div>
-            <div className="flex items-center gap-2.5">
-              <BrandMark className="h-9 w-9" />
-              <span className="font-display text-xl font-bold text-white">
-                arpfibra
-              </span>
-            </div>
+            <Image
+              src="/logo-arp.png"
+              alt="ARP Fibra"
+              width={210}
+              height={70}
+              className="h-11 w-auto"
+            />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-text-dim">
               Internet para conectar tudo o que importa.
             </p>
