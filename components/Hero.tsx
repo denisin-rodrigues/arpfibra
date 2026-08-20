@@ -150,7 +150,7 @@ export default function Hero() {
             duration={800}
             className="mx-auto mt-auto max-w-[24rem] lg:mx-0 lg:mt-0"
           >
-            <p className="text-center text-base leading-relaxed text-text-dim lg:translate-x-[79%] lg:text-xl">
+            <p className="text-center text-base leading-relaxed text-text-dim lg:translate-x-[109%] lg:text-xl">
               Trabalhe, estude, jogue, assista e conecte todos os seus
               dispositivos com uma internet preparada para acompanhar o seu ritmo.
             </p>

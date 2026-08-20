@@ -235,10 +235,18 @@
     background: #000;
     animation: splash-out 500ms ease 2100ms forwards;
   }
+  /* `contain`, e não `cover`: o vídeo é 16:9 e a tela raramente é, então
+     `cover` ampliava para preencher e cortava as laterais da logo. Como o
+     clipe já é a logo centralizada sobre preto e a cortina também é preta,
+     as faixas do `contain` são invisíveis. O max-width dá respiro para a
+     animação não encostar nas bordas em telas largas. */
   .splash video {
+    display: block; /* inline por padrão — sem isto o `margin: auto` não centraliza */
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    max-width: 900px;
+    margin: 0 auto;
+    object-fit: contain;
   }
   @keyframes splash-out {
     to {
