@@ -25,7 +25,7 @@ export default function ProgressiveBlur() {
         left: 0,
         width: "100%",
         height: "200px",
-        zIndex: 999,
+        zIndex: 1,
         pointerEvents: "none",
       }}
     >
