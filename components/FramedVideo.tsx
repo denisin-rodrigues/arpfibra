@@ -43,11 +43,17 @@ export default function FramedVideo() {
     mm.add(
       {
         isDesktop: "(min-width: 1024px)",
+        // `isMobile` parece redundante com `isDesktop`, mas o gsap.matchMedia
+        // só executa o callback quando ALGUMA condição casa. Sem ele, um
+        // celular com movimento habilitado não casaria nada e a seção ficaria
+        // inteiramente sem animação.
+        isMobile: "(max-width: 1023px)",
         reduce: "(prefers-reduced-motion: reduce)",
       },
       (ctx) => {
         const { isDesktop, reduce } = ctx.conditions as {
           isDesktop: boolean;
+          isMobile: boolean;
           reduce: boolean;
         };
 
