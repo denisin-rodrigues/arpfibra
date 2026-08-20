@@ -65,15 +65,6 @@ export default function Footer() {
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-text-dim">
               Internet para conectar tudo o que importa.
             </p>
-            <a
-              href="https://instagram.com/arpfibra"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white transition-colors hover:bg-white/20"
-              aria-label="Instagram da ARP Fibra"
-            >
-              <Icon icon="solar:gallery-round-bold" className="text-xl" />
-            </a>
           </div>
 
           {/* Colunas de links */}
