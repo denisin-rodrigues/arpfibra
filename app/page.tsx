@@ -13,10 +13,12 @@ import FinalCta from "@/components/FinalCta";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import ProgressiveBlur from "@/components/ProgressiveBlur";
+import LoadingSplash from "@/components/LoadingSplash";
 
 export default function Home() {
   return (
     <>
+      <LoadingSplash />
       <Navbar />
       <main>
         <Hero />

@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Master 4K da cortina de carregamento: pesa 3,5 MB e nao e servido.
+# O que vai ao ar e o public/carregando.mp4, derivado dele por ffmpeg.
+public/PLACEHOAD.mp4
