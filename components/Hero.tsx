@@ -54,7 +54,7 @@ export default function Hero() {
 
       {/* Vídeo do hero (nítido, travado em 16:9, bordas esfumadas para
           dissolver no fundo borrado — sem linha de emenda). */}
-      <div className="absolute inset-0 flex -translate-y-[10%] items-center justify-center lg:translate-y-0">
+      <div className="absolute inset-0 flex -translate-y-[4%] items-center justify-center lg:translate-y-0">
         <video
           className="hero-video-mask aspect-video h-auto w-full max-w-none scale-[1.5] object-cover lg:h-full lg:w-auto lg:scale-100"
           autoPlay
