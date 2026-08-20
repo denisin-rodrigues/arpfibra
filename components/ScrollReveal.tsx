@@ -55,6 +55,17 @@ export default function ScrollReveal({
       return;
     }
 
+    // Conteúdo já visível na primeira dobra (ex.: microbenefícios do Hero,
+    // colados na base da viewport) não deve esperar um scroll para revelar:
+    // o rootMargin negativo abaixo pode deixá-lo fora da zona de interseção
+    // logo no carregamento. Se já estiver na tela, revela na hora.
+    const rect = node.getBoundingClientRect();
+    const alreadyInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+    if (alreadyInViewport) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
