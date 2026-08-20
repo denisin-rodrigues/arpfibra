@@ -18,7 +18,7 @@ const services = [
   },
   {
     icon: "solar:bill-list-bold-duotone",
-    image: undefined,
+    image: "/icons/boleto-3d.png",
     title: "2ª via de boleto",
     text: "Emita sua fatura de maneira rápida e prática.",
     cta: "Emitir boleto",
