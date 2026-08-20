@@ -27,7 +27,7 @@ const services = [
   },
   {
     icon: "solar:settings-minimalistic-bold-duotone",
-    image: undefined,
+    image: "/icons/suporte-tecnico-3d.png",
     title: "Suporte técnico",
     text: "Precisa de ajuda com sua conexão? Nossa equipe está pronta para atender.",
     cta: "Solicitar suporte",
