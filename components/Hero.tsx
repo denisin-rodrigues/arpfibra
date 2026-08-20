@@ -54,7 +54,7 @@ export default function Hero() {
 
       {/* Vídeo do hero (nítido, travado em 16:9, bordas esfumadas para
           dissolver no fundo borrado — sem linha de emenda). */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="absolute inset-0 flex -translate-y-[10%] items-center justify-center">
         <video
           className="hero-video-mask aspect-video h-auto w-full max-w-none scale-[1.5] object-cover lg:h-full lg:w-auto lg:scale-100"
           autoPlay
@@ -118,10 +118,12 @@ export default function Hero() {
 
       {/* Conteúdo */}
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 pb-14 sm:pb-16">
-        {/* Centro: título à esquerda + subtítulo à direita, emoldurando o personagem */}
-        <div className="flex flex-1 -translate-y-[20%] flex-col justify-center gap-6 lg:translate-y-0 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+        {/* Mobile: título → subtítulo (empurrado para baixo) → CTAs → microbenefícios.
+            Desktop (lg+): título e subtítulo lado a lado no topo; microbenefícios
+            e CTAs numa segunda "linha" ancorada embaixo, perto dos pés do personagem. */}
+        <div className="flex flex-1 flex-col lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-10 lg:gap-y-8">
           {/* HEAD */}
-          <div className="mx-auto max-w-sm text-center lg:mx-0 lg:max-w-lg lg:-translate-x-[85%]">
+          <div className="mx-auto max-w-sm pt-2 text-center lg:mx-0 lg:max-w-lg lg:-translate-x-[85%]">
             <p
               data-hero
               className="text-eyebrow mb-5 hidden w-fit items-center gap-2 bg-white px-4 py-2 text-orange-deep shadow-[0_4px_16px_-4px_rgba(0,0,0,0.35)] lg:inline-flex lg:mx-auto"
@@ -131,7 +133,7 @@ export default function Hero() {
               Fibra óptica para o seu dia a dia
             </p>
 
-            <h1 className="text-hero-compact -translate-y-[80%] font-bold lg:translate-y-0">
+            <h1 className="text-hero-compact font-bold">
               <span data-hero className="text-glow">
                 Sua vida acontece rápido.
               </span>{" "}
@@ -141,50 +143,51 @@ export default function Hero() {
             </h1>
           </div>
 
-          {/* SUBHEAD — o deslocamento vertical fica no wrapper porque o GSAP
-              reescreve o transform de qualquer elemento com data-hero. */}
-          <div className="-translate-y-[100%] lg:translate-y-0">
-            <p
-              data-hero
-              className="mx-auto max-w-[24rem] text-center text-base leading-relaxed text-text-dim lg:mx-0 lg:translate-x-[79%] lg:text-xl"
-            >
-              Trabalhe, estude, jogue, assista e conecte todos os seus
-              dispositivos com uma internet preparada para acompanhar o seu ritmo.
-            </p>
-          </div>
-        </div>
-
-        {/* Base: microbenefícios + CTAs, próximos aos pés do personagem */}
-        <div className="mt-auto flex flex-col items-center">
-          <ul
+          {/* SUBHEAD — no mobile, mt-auto empurra ela (e tudo que vem depois,
+              já que seguem logo abaixo no fluxo) para perto da base; no
+              desktop fica ao lado do título. */}
+          <p
             data-hero
-            className="mb-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-base text-text-faint"
+            className="mx-auto mt-auto max-w-[24rem] text-center text-base leading-relaxed text-text-dim lg:mx-0 lg:mt-0 lg:translate-x-[79%] lg:text-xl"
           >
-            {micro.map((m, i) => (
-              <li key={m} className="flex items-center gap-5">
-                {i > 0 && <span className="text-orange/50">•</span>}
-                <span className="flex items-center gap-1.5">
-                  <Icon icon="solar:check-circle-bold" className="text-orange" />
-                  {m}
-                </span>
-              </li>
-            ))}
-          </ul>
+            Trabalhe, estude, jogue, assista e conecte todos os seus
+            dispositivos com uma internet preparada para acompanhar o seu ritmo.
+          </p>
 
-          <div data-hero className="flex flex-col items-center gap-3 sm:flex-row">
-            <a href="#combos" className="btn btn-primary btn-shine rounded-lg">
-              <Icon icon="solar:widget-5-bold" className="text-lg" />
-              Ver combos
-            </a>
-            <a
-              href={site.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-white rounded-lg"
+          {/* Base: CTAs + microbenefícios, com mais respiro interno.
+              No mobile ficam nessa ordem; no desktop invertem
+              (microbenefícios em cima) via flex-col-reverse. */}
+          <div className="mt-8 flex flex-col items-center gap-7 pb-2 lg:mt-auto lg:w-full lg:flex-col-reverse lg:gap-6 lg:pb-0">
+            <div data-hero className="flex flex-row items-center justify-center gap-2 sm:gap-3">
+              <a href="#combos" className="btn btn-sm btn-primary btn-shine rounded-lg">
+                <Icon icon="solar:widget-5-bold" className="text-base sm:text-lg" />
+                Ver combos
+              </a>
+              <a
+                href={site.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-sm btn-white rounded-lg"
+              >
+                <Icon icon="solar:chat-round-call-bold" className="text-lg" />
+                Falar com a ARP
+              </a>
+            </div>
+
+            <ul
+              data-hero
+              className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-base text-text-faint"
             >
-              <Icon icon="solar:chat-round-call-bold" className="text-lg" />
-              Falar com a ARP
-            </a>
+              {micro.map((m, i) => (
+                <li key={m} className="flex items-center gap-5">
+                  {i > 0 && <span className="text-orange/50">•</span>}
+                  <span className="flex items-center gap-1.5">
+                    <Icon icon="solar:check-circle-bold" className="text-orange" />
+                    {m}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>
