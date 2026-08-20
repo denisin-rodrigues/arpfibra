@@ -16,18 +16,18 @@ export default function Navbar() {
   }, [open]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-5 sm:px-9">
+    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-20 sm:px-9">
       <nav
         aria-label="Principal"
-        className="mx-auto flex w-full max-w-6xl items-center justify-center gap-8 bg-white px-6 py-4 shadow-[0_2px_20px_-6px_rgba(24,14,8,0.15)] transition-all duration-500 sm:gap-14 sm:px-10"
-        style={{ clipPath: "polygon(0 0, 100% 0, 96% 100%, 4% 100%)" }}
+        className="glass mx-auto flex w-full max-w-6xl items-center justify-center gap-8 px-6 py-2.5 shadow-[0_2px_20px_-6px_rgba(24,14,8,0.15)] transition-all duration-500 sm:gap-14 sm:px-10 sm:py-3"
+        style={{ borderRadius: "41%" }}
       >
         <a
           href="#top"
           className="relative flex items-center gap-2.5 rounded-lg"
           aria-label="ARP Fibra — início"
         >
-          <BrandMark className="h-8 w-8" />
+          <BrandMark className="h-7 w-7" />
           <span className="font-display text-lg font-bold tracking-tight text-text">
             arp<span className="text-orange">fibra</span>
           </span>
