@@ -119,29 +119,34 @@ export default function FramedVideo() {
           </div>
         </div>
 
-        {/* Frases de conforto + CTA sobre o vídeo de fundo */}
+        {/* Frases de conforto + CTA sobre o vídeo de fundo. No mobile ganham
+            o mesmo painel liquid glass do card de intro (fonte menor,
+            fundo sólido) para legibilidade; no desktop seguem soltas
+            sobre o vídeo, com texto branco (já tem scrim escuro por trás). */}
         <div
           ref={overlay}
-          className="text-invert absolute bottom-0 z-20 w-full max-w-3xl px-6 pb-16 text-center"
+          className="absolute bottom-0 z-20 w-full max-w-2xl px-5 pb-10 text-center lg:max-w-3xl lg:px-6 lg:pb-16"
           style={{ visibility: "hidden" }}
         >
-          <div className="mb-6 flex flex-wrap justify-center gap-x-6 gap-y-1 font-display text-xl font-medium text-text sm:text-2xl">
-            {scenes.map((s) => (
-              <span key={s}>{s}</span>
-            ))}
+          <div className="rounded-[2rem] border border-white/60 bg-white/90 px-5 py-6 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none">
+            <div className="mb-4 flex flex-wrap justify-center gap-x-3 gap-y-1 font-display text-sm font-medium text-[#1b1410] sm:text-base lg:mb-6 lg:gap-x-6 lg:text-xl lg:text-white">
+              {scenes.map((s) => (
+                <span key={s}>{s}</span>
+              ))}
+            </div>
+            <p className="mb-5 font-display text-lg font-semibold text-orange sm:text-xl lg:mb-8 lg:text-2xl">
+              E você? Só aproveitando.
+            </p>
+            <a
+              href={site.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary pointer-events-auto"
+            >
+              <Icon icon="solar:heart-bold" className="text-lg" />
+              Quero viver conectado
+            </a>
           </div>
-          <p className="mb-8 font-display text-2xl font-semibold text-orange sm:text-3xl">
-            E você? Só aproveitando.
-          </p>
-          <a
-            href={site.whatsapp}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-primary pointer-events-auto"
-          >
-            <Icon icon="solar:heart-bold" className="text-lg" />
-            Quero viver conectado
-          </a>
         </div>
       </div>
     </section>
