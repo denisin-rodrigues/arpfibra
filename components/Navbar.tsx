@@ -7,6 +7,10 @@ import BrandMark from "./BrandMark";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  // Fixa só dentro da primeira seção (Hero); depois disso vira "absolute"
+  // no ponto exato onde estava, e rola junto com a página normalmente.
+  const [pinned, setPinned] = useState(true);
+  const [heroHeight, setHeroHeight] = useState(0);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -15,8 +19,28 @@ export default function Navbar() {
     };
   }, [open]);
 
+  useEffect(() => {
+    const hero = document.getElementById("top");
+    if (!hero) return;
+
+    const updateHeight = () => setHeroHeight(hero.offsetHeight);
+    const onScroll = () => setPinned(window.scrollY < hero.offsetHeight);
+
+    updateHeight();
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", updateHeight);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", updateHeight);
+    };
+  }, []);
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-20 sm:px-9">
+    <header
+      className="inset-x-0 z-50 flex justify-center px-20 sm:px-9"
+      style={{ position: pinned ? "fixed" : "absolute", top: pinned ? 0 : heroHeight }}
+    >
       <nav
         aria-label="Principal"
         className="glass mx-auto flex w-full max-w-6xl items-center justify-center gap-8 rounded-full px-6 py-2.5 shadow-[0_2px_20px_-6px_rgba(24,14,8,0.15)] transition-all duration-500 sm:gap-14 sm:px-10 sm:py-3"

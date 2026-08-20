@@ -108,7 +108,7 @@ export default function FramedVideo() {
           ref={intro}
           className="pointer-events-none absolute z-20 w-full max-w-2xl px-5"
         >
-          <div className="-translate-y-[85%] rounded-[2rem] border border-white/60 bg-white/90 px-5 py-6 text-center shadow-[0_20px_60px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:translate-y-0 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none">
+          <div className="-translate-y-[105%] rounded-[2rem] border border-white/60 bg-white/90 px-5 py-6 text-center shadow-[0_20px_60px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:translate-y-0 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none lg:backdrop-blur-none">
             <p className="text-eyebrow mb-3 text-orange lg:mb-4">
               Conecte. Relaxe. A ARP cuida do resto.
             </p>
