@@ -19,8 +19,7 @@ export default function Navbar() {
     <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-20 sm:px-9">
       <nav
         aria-label="Principal"
-        className="glass mx-auto flex w-full max-w-6xl items-center justify-center gap-8 px-6 py-2.5 shadow-[0_2px_20px_-6px_rgba(24,14,8,0.15)] transition-all duration-500 sm:gap-14 sm:px-10 sm:py-3"
-        style={{ borderRadius: "41%" }}
+        className="glass mx-auto flex w-full max-w-6xl items-center justify-center gap-8 rounded-full px-6 py-2.5 shadow-[0_2px_20px_-6px_rgba(24,14,8,0.15)] transition-all duration-500 sm:gap-14 sm:px-10 sm:py-3"
       >
         <a
           href="#top"
