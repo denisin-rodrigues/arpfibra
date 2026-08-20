@@ -50,11 +50,16 @@ export default function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           {/* Marca */}
           <div>
+            {/* Versão branca: o rodapé tem fundo laranja sólido, onde a logo
+                colorida perde contraste. width/height são as dimensões reais
+                do arquivo (169x76) — o next/image usa esses valores para gerar
+                o srcset e reservar o espaço, então destoar deles desalinha o
+                layout antes da imagem carregar. */}
             <Image
-              src="/logo-arp.png"
+              src="/logo-branca.png"
               alt="ARP Fibra"
-              width={210}
-              height={70}
+              width={169}
+              height={76}
               className="h-11 w-auto"
             />
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-text-dim">
