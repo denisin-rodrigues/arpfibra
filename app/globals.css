@@ -152,6 +152,10 @@
 
   .reveal-init { opacity: 0; transform: translateY(24px); }
 
+  /* Esconde a barra de scroll, mantendo o scroll por toque/arraste */
+  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
   /* Título da section 2 dentro do painel de vidro: menor só no mobile.
      (Não dá para mexer em .text-section, usada por todas as seções.) */
   @media (max-width: 1023px) {

@@ -176,13 +176,13 @@ export default function Hero() {
 
             <ul
               data-hero
-              className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-base text-text-faint"
+              className="no-scrollbar flex w-full max-w-full flex-nowrap items-center justify-start gap-x-1.5 overflow-x-auto text-[10px] text-text-faint lg:w-auto lg:flex-wrap lg:justify-center lg:gap-x-5 lg:gap-y-2 lg:overflow-visible lg:text-base"
             >
               {micro.map((m, i) => (
-                <li key={m} className="flex items-center gap-5">
+                <li key={m} className="flex shrink-0 items-center gap-1.5 lg:gap-5">
                   {i > 0 && <span className="text-orange/50">•</span>}
-                  <span className="flex items-center gap-1.5">
-                    <Icon icon="solar:check-circle-bold" className="text-orange" />
+                  <span className="flex items-center gap-1 lg:gap-1.5">
+                    <Icon icon="solar:check-circle-bold" className="text-[10px] text-orange lg:text-base" />
                     {m}
                   </span>
                 </li>
