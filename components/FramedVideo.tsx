@@ -1,10 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { Icon } from "@iconify/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { site } from "@/lib/site";
+import { HYPERSPEED_PRESET_FIVE } from "@/lib/hyperspeed-presets";
+
+/* Carregado sob demanda: three + postprocessing somam ~700 KB, e nada disso
+   precisa estar no bundle inicial nem rodar no servidor (usa WebGL). */
+const Hyperspeed = dynamic(() => import("./Hyperspeed"), { ssr: false });
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
@@ -109,7 +115,14 @@ export default function FramedVideo() {
       className="relative h-[250vh] bg-bg"
       aria-label="A melhor internet é aquela que você esquece que está usando"
     >
-      <div className="fv-stage sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden bg-[#08080a] lg:bg-white">
+      <div className="fv-stage sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden bg-[#08080a]">
+        {/* Fundo da seção: entra no lugar do preenchimento preto chapado.
+            O #08080a acima continua como base — cobre o instante antes do
+            WebGL subir e casa com o fog preto do próprio efeito. */}
+        <div className="absolute inset-0 z-0">
+          <Hyperspeed effectOptions={HYPERSPEED_PRESET_FIVE} />
+        </div>
+
         {/* Vídeo como fundo da seção. Duas versões: horizontal (16:9) no
             desktop e vertical (9:16) no mobile. O atributo `media` faz o
             navegador baixar APENAS a fonte correspondente — o vídeo do
@@ -119,7 +132,10 @@ export default function FramedVideo() {
             texto) fica restrito ao vídeo, sem invadir as faixas brancas. */}
         <div
           ref={frame}
-          className="fv-video-mask absolute inset-0 lg:static lg:aspect-video lg:h-full lg:w-auto lg:max-w-none"
+          /* lg:relative (em vez de lg:static) só para o z-10 valer e o vídeo
+             ficar acima do canvas do Hyperspeed; com inset-0 zerado em ambos
+             os eixos, `relative` não desloca nada no desktop. */
+          className="fv-video-mask absolute inset-0 z-10 lg:relative lg:aspect-video lg:h-full lg:w-auto lg:max-w-none"
         >
           <video
             ref={video}
