@@ -370,6 +370,20 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         });
         this.renderer.setSize(initW, initH, false);
         this.renderer.setPixelRatio(window.devicePixelRatio);
+
+        /* Se o contexto WebGL cair — troca de GPU, aba dormindo tempo demais,
+           ou o navegador atingindo o limite de contextos simultâneos — o loop
+           para em vez de tentar desenhar a cada quadro e inundar o console.
+           preventDefault() é o que permitiria uma restauração posterior. */
+        this.onContextLost = (ev) => {
+          ev.preventDefault();
+          this.disposed = true;
+        };
+        this.renderer.domElement.addEventListener(
+          'webglcontextlost',
+          this.onContextLost
+        );
+
         this.composer = new EffectComposer(this.renderer);
         container.append(this.renderer.domElement);
 
@@ -622,10 +636,21 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
         }
 
         if (this.renderer) {
+          const canvas = this.renderer.domElement;
+          if (canvas && this.onContextLost) {
+            canvas.removeEventListener('webglcontextlost', this.onContextLost);
+          }
           this.renderer.dispose();
-          this.renderer.forceContextLoss();
-          if (this.renderer.domElement && this.renderer.domElement.parentNode) {
-            this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
+          /* forceContextLoss() só faz sentido num contexto ainda vivo. Chamá-lo
+             num já perdido conta como mais uma perda provocada pela página, e é
+             o acúmulo disso que faz o Chrome responder com
+             "Web page caused context loss and was blocked". */
+          const gl = this.renderer.getContext && this.renderer.getContext();
+          if (gl && !gl.isContextLost()) {
+            this.renderer.forceContextLoss();
+          }
+          if (canvas && canvas.parentNode) {
+            canvas.parentNode.removeChild(canvas);
           }
         }
         if (this.composer) {
@@ -1184,7 +1209,21 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
     };
     options.distortion = distortions[options.distortion];
 
-    const myApp = new App(container, options);
+    /* O construtor do WebGLRenderer LANÇA quando o navegador recusa um
+       contexto. Sem este try o erro sobe pela árvore do React e derruba a
+       seção inteira por causa de um fundo decorativo. Degradar para o palco
+       escuro (que já é a base por trás do canvas) é o comportamento certo. */
+    let myApp;
+    try {
+      myApp = new App(container, options);
+    } catch (err) {
+      console.warn(
+        'Hyperspeed: contexto WebGL indisponível; seguindo sem o fundo animado.',
+        err
+      );
+      return;
+    }
+
     appRef.current = myApp;
     myApp.loadAssets().then(myApp.init);
 
