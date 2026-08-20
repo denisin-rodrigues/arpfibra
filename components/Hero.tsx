@@ -52,23 +52,49 @@ export default function Hero() {
         }}
       />
 
-      {/* Scrims direcionais */}
+      {/* Scrims direcionais. A cauda fecha em rgba(8,8,10,1): parando em 0.96
+          sobrava 4% do fundo quente, e essa fresta marrom batia direto no
+          #08080a da section 2, desenhando uma linha de emenda entre as duas. */}
       <div
         aria-hidden
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(8,8,10,0.72) 0%, rgba(8,8,10,0) 22%, rgba(8,8,10,0) 45%, rgba(8,8,10,0.55) 72%, rgba(8,8,10,0.96) 100%)",
+            "linear-gradient(180deg, rgba(8,8,10,0.72) 0%, rgba(8,8,10,0) 22%, rgba(8,8,10,0) 45%, rgba(8,8,10,0.55) 72%, rgba(8,8,10,0.93) 90%, rgba(8,8,10,1) 100%)",
         }}
       />
-      {/* Grão sutil */}
-      <div aria-hidden className="grain absolute inset-0" />
+      {/* Grão sutil — esmaecido na base para a textura não cortar em seco
+          na divisa (a section 2 não tem grão). */}
+      <div
+        aria-hidden
+        className="grain absolute inset-0"
+        style={{
+          WebkitMaskImage:
+            "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)",
+          maskImage:
+            "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)",
+        }}
+      />
 
       {/* Linhas de referência — enquadram o personagem/círculo, sem cruzar por cima */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        {/* Verticais: fora do círculo, altura cheia */}
-        <span className="absolute inset-y-0 left-[25%] w-px bg-white/12" />
-        <span className="absolute inset-y-0 left-[75%] w-px bg-white/12" />
+        {/* Verticais: fora do círculo, altura cheia. Esmaecidas nas duas
+            pontas — em cor chapada elas terminavam cortadas na divisa com a
+            section 2, reforçando visualmente a emenda. */}
+        <span
+          className="absolute inset-y-0 left-[25%] w-px"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.12) 14%, rgba(255,255,255,0.12) 76%, rgba(255,255,255,0) 100%)",
+          }}
+        />
+        <span
+          className="absolute inset-y-0 left-[75%] w-px"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.12) 14%, rgba(255,255,255,0.12) 76%, rgba(255,255,255,0) 100%)",
+          }}
+        />
         {/* Horizontais: acima da cabeça e abaixo do sofá, com vão no meio
             para não cruzar sobre o personagem/círculo */}
         <span
