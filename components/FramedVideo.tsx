@@ -28,6 +28,7 @@ export default function FramedVideo() {
   const intro = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLDivElement>(null);
   const frameInner = useRef<HTMLDivElement>(null);
+  const edgeBlend = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
 
   /* O `media` das <source> só é avaliado no carregamento. Ao cruzar o
@@ -108,6 +109,14 @@ export default function FramedVideo() {
             frameInner.current,
             { scale: startScale },
             { scale: 1, ease: "power2.inOut" },
+            0
+          );
+          // O disfarce das laterais só faz sentido quando o vídeo já alcançou
+          // as bordas da tela, então entra junto com a expansão.
+          tl.fromTo(
+            edgeBlend.current,
+            { opacity: 0 },
+            { opacity: 1, ease: "power2.inOut" },
             0
           );
         }
@@ -193,6 +202,25 @@ export default function FramedVideo() {
             />
           </div>
         </div>
+
+        {/* Disfarce branco nas laterais, no lugar da tarja preta que a máscara
+            do vídeo desenhava contra o palco escuro. Fica ancorado no PALCO, e
+            não dentro do vídeo: a máscara tem 1618px de largura contra ~1381 de
+            tela, então um gradiente preso a ela cairia fora da área visível.
+            Entra só conforme o vídeo abre (opacidade animada) — no tamanho de
+            card não haveria borda de tela para disfarçar.
+            rgba(255,255,255,0) em vez da palavra `transparent`, que o navegador
+            interpola em direção ao preto e devolveria a franja escura de volta. */}
+        <div
+          ref={edgeBlend}
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-[15] hidden lg:block"
+          style={{
+            opacity: 0,
+            background:
+              "linear-gradient(to right, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 9%, rgba(255,255,255,0) 91%, rgba(255,255,255,0.5) 100%)",
+          }}
+        />
 
         {/* Título introdutório. O deslocamento e o painel "liquid glass" ficam
             no filho porque o GSAP controla o transform do elemento com ref. */}

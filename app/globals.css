@@ -173,13 +173,20 @@
      vídeo (16:9), então a máscara esfuma as bordas laterais reais dele,
      dissolvendo no fundo branco do palco. No mobile não se aplica: lá o
      vídeo é vertical e preenche a tela inteira. */
+  /* O esfumado das laterais foi de 10% para 2.5%. Ele torna a borda do vídeo
+     transparente, e o que aparece atrás é o palco — que hoje é #08080a, não
+     mais branco. A 10% a zona esfumada invadia a área visível e desenhava uma
+     tarja preta nas laterais quando o vídeo abre por completo. A 2.5% ela fica
+     fora da tela na maioria das proporções, e continua suavizando a borda real
+     do vídeo em telas largas demais para ele cobrir. O disfarce visível agora é
+     branco, aplicado sobre o vídeo no FramedVideo. */
   @media (min-width: 1024px) {
     .fv-video-mask {
       -webkit-mask-image: linear-gradient(
-        to right, transparent 0%, #000 10%, #000 90%, transparent 100%
+        to right, rgba(0,0,0,0) 0%, #000 2.5%, #000 97.5%, rgba(0,0,0,0) 100%
       );
       mask-image: linear-gradient(
-        to right, transparent 0%, #000 10%, #000 90%, transparent 100%
+        to right, rgba(0,0,0,0) 0%, #000 2.5%, #000 97.5%, rgba(0,0,0,0) 100%
       );
     }
   }
