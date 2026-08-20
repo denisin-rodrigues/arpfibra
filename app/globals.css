@@ -1,26 +1,341 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   ARP FIBRA — Design System (tema claro: laranja + branco)
+   ============================================================ */
+
+@theme {
+  /* Base clara */
+  --color-bg: #ffffff;
+  --color-bg-elev: #fff5ee;      /* creme quente para faixas suaves */
+  --color-surface: #ffffff;
+  --color-line: rgba(24, 14, 8, 0.10);
+  --color-line-strong: rgba(24, 14, 8, 0.18);
+
+  --color-text: #1b1410;         /* quase-preto quente */
+  --color-text-dim: #6b615b;
+  --color-text-faint: #9a8f88;
+
+  /* Marca ARP */
+  --color-orange: #ff5a1e;
+  --color-orange-bright: #ff7d43;
+  --color-orange-deep: #e0430f;
+  --color-gold: #e9a23b;
+  --color-cream: #fff5ee;
+
+  /* Tipografia */
+  --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@layer base {
+  * { border-color: var(--color-line); }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: auto;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    font-feature-settings: "ss01", "cv01";
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    line-height: 1.02;
+    font-weight: 600;
+  }
+
+  ::selection { background: var(--color-orange); color: #fff; }
+
+  :focus-visible {
+    outline: 2px solid var(--color-orange);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: clip; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer utilities {
+  /* Tipografia fluida */
+  .text-hero {
+    font-size: clamp(2.6rem, 7vw, 6.2rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+  .text-section {
+    font-size: clamp(2rem, 4.6vw, 3.9rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+  }
+  /* Título do hero em coluna estreita — calibrado para caber em até
+     3 linhas com o texto completo, sem estourar a altura. */
+  .text-hero-compact {
+    font-size: clamp(1.75rem, 3.6vw, 3.6rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+  .text-eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  /* Números/títulos com brilho laranja (claro por padrão) */
+  .text-glow {
+    background: linear-gradient(100deg, #ff7d43 0%, #e0430f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Em faixas escuras/laranja, o glow vira branco->creme */
+  .text-invert .text-glow,
+  .section-orange .text-glow {
+    background: linear-gradient(100deg, #ffffff 0%, #ffe3d1 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-orange-glow {
+    color: var(--color-orange);
+    text-shadow: 0 0 30px color-mix(in srgb, var(--color-orange) 30%, transparent);
+  }
+  .section-orange .text-orange-glow,
+  .text-invert .text-orange-glow {
+    color: #fff3ec;
+    text-shadow: 0 0 34px rgba(255, 255, 255, 0.35);
+  }
+
+  /* Vidro claro (navbar / botões fantasma sobre mídia) */
+  .glass {
+    background: color-mix(in srgb, #ffffff 72%, transparent);
+    backdrop-filter: blur(18px) saturate(1.2);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
+    border: 1px solid var(--color-line);
+    box-shadow: 0 8px 30px -14px rgba(24, 14, 8, 0.25);
+  }
+
+  /* Card claro com sombra suave (estilo referência) */
+  .border-gradient {
+    background: #ffffff;
+    border: 1px solid var(--color-line);
+    box-shadow: 0 18px 50px -28px rgba(24, 14, 8, 0.28);
+  }
+
+  /* Halo laranja em card de destaque */
+  .halo { box-shadow: 0 24px 70px -24px color-mix(in srgb, var(--color-orange) 55%, transparent); }
+
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.25;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+
+  .reveal-init { opacity: 0; transform: translateY(24px); }
+
+  /* Título da section 2 dentro do painel de vidro: menor só no mobile.
+     (Não dá para mexer em .text-section, usada por todas as seções.) */
+  @media (max-width: 1023px) {
+    .fv-title { font-size: clamp(1.35rem, 5.6vw, 1.85rem); }
+  }
+
+  /* Vídeo da section 2: no desktop o elemento tem exatamente o tamanho do
+     vídeo (16:9), então a máscara esfuma as bordas laterais reais dele,
+     dissolvendo no fundo branco do palco. No mobile não se aplica: lá o
+     vídeo é vertical e preenche a tela inteira. */
+  @media (min-width: 1024px) {
+    .fv-video-mask {
+      -webkit-mask-image: linear-gradient(
+        to right, transparent 0%, #000 10%, #000 90%, transparent 100%
+      );
+      mask-image: linear-gradient(
+        to right, transparent 0%, #000 10%, #000 90%, transparent 100%
+      );
+    }
+  }
+
+  /* Máscara do vídeo do hero: bordas laterais esfumadas para dissolver no
+     fundo borrado. No mobile o vídeo é guiado pela largura, então as bordas
+     de cima/baixo também ficam visíveis — ali esfumamos nos dois eixos. */
+  .hero-video-mask {
+    -webkit-mask-image: linear-gradient(
+      to right, transparent 0%, #000 11%, #000 89%, transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right, transparent 0%, #000 11%, #000 89%, transparent 100%
+    );
+  }
+  @media (max-width: 1023px) {
+    .hero-video-mask {
+      -webkit-mask-image:
+        linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%),
+        linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
+      mask-image:
+        linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%),
+        linear-gradient(to bottom, transparent 0%, #000 18%, #000 82%, transparent 100%);
+      -webkit-mask-composite: source-in;
+      mask-composite: intersect;
+    }
+  }
+
+  /* ---------- Faixa laranja: sobrescreve tokens para texto claro ---------- */
+  .section-orange {
+    background: linear-gradient(160deg, #ff7a2e 0%, #ff5a1e 52%, #e8480f 100%);
+    color: #ffffff;
+    --color-text: #ffffff;
+    --color-text-dim: rgba(255, 255, 255, 0.88);
+    --color-text-faint: rgba(255, 255, 255, 0.68);
+    --color-line: rgba(255, 255, 255, 0.24);
+    --color-line-strong: rgba(255, 255, 255, 0.42);
+  }
+  /* Só troca as cores de texto (para o hero sobre vídeo) */
+  .text-invert {
+    --color-text: #ffffff;
+    --color-text-dim: rgba(255, 255, 255, 0.85);
+    --color-text-faint: rgba(255, 255, 255, 0.62);
+    --color-line: rgba(255, 255, 255, 0.18);
+    --color-line-strong: rgba(255, 255, 255, 0.4);
+  }
+
+  /* ---------- Divisor de seção com recorte (notch) ---------- */
+  .notch-top {
+    clip-path: polygon(
+      0 0, 38% 0, 43% 46px, 57% 46px, 62% 0, 100% 0, 100% 100%, 0 100%
+    );
+  }
+  @media (max-width: 640px) {
+    .notch-top {
+      clip-path: polygon(
+        0 0, 30% 0, 38% 34px, 62% 34px, 70% 0, 100% 0, 100% 100%, 0 100%
+      );
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================================
+   Botões — pílula laranja/branco (estilo referência)
+   ============================================================ */
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.95rem 1.9rem;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1;
+    transition: all 0.25s var(--ease-out-quart);
+    cursor: pointer;
+  }
+  .btn-sm { padding: 0.65rem 1.25rem; font-size: 0.85rem; }
+
+  /* Primário: laranja sólido, texto branco */
+  .btn-primary {
+    background: var(--color-orange);
+    color: #ffffff;
+    box-shadow: 0 12px 30px -12px color-mix(in srgb, var(--color-orange) 80%, transparent);
+  }
+  .btn-primary:hover {
+    background: var(--color-orange-deep);
+    transform: translateY(-2px);
+    box-shadow: 0 18px 40px -12px color-mix(in srgb, var(--color-orange) 90%, transparent);
+  }
+
+  /* Fantasma: contorno laranja, texto laranja (sobre branco) */
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-orange);
+    border: 1.5px solid color-mix(in srgb, var(--color-orange) 45%, transparent);
+  }
+  .btn-ghost:hover {
+    border-color: var(--color-orange);
+    background: color-mix(in srgb, var(--color-orange) 8%, transparent);
+    transform: translateY(-2px);
+  }
+
+  /* Branco: para usar sobre faixas laranja */
+  .btn-white {
+    background: #ffffff;
+    color: var(--color-orange-deep);
+    box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.35);
+  }
+  .btn-white:hover { background: #fff2ea; transform: translateY(-2px); }
+
+  /* Contorno branco: sobre faixas laranja */
+  .btn-outline-white {
+    background: transparent;
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+  }
+  .btn-outline-white:hover { border-color: #fff; background: rgba(255, 255, 255, 0.12); }
+
+  /* Espelhamento: feixe de luz que varre o botão periodicamente */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shine::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 35%;
+    height: 100%;
+    background: linear-gradient(
+      115deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.65) 50%,
+      transparent 100%
+    );
+    transform: skewX(-20deg);
+    animation: btn-shine-sweep 3.4s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes btn-shine-sweep {
+    0% { left: -60%; }
+    22% { left: 135%; }
+    100% { left: 135%; }
+  }
+}
+
+.split-word { display: inline-block; will-change: transform; }
+.split-line-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-init { opacity: 1 !important; transform: none !important; }
+  .split-word { transform: none !important; opacity: 1 !important; }
 }
