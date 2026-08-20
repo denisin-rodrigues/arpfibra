@@ -19,7 +19,7 @@ export default function FloatingWhatsApp() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Falar pelo WhatsApp"
-      className={`fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-orange text-white shadow-[0_10px_40px_-8px_rgba(255,90,30,0.8)] transition-all duration-500 hover:bg-orange-deep ${
+      className={`fixed bottom-5 right-5 z-[1000] flex h-14 w-14 items-center justify-center rounded-full bg-orange text-white shadow-[0_10px_40px_-8px_rgba(255,90,30,0.8)] transition-all duration-500 hover:bg-orange-deep ${
         show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
       }`}
     >

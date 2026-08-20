@@ -87,8 +87,9 @@ export default function Hero() {
         />
       </div>
 
-      {/* Conteúdo */}
-      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 pb-14 sm:pb-16">
+      {/* Conteúdo — z acima do ProgressiveBlur (z-index 999, fixo na base da
+          tela) para os CTAs e microbenefícios não ficarem borrados na primeira dobra. */}
+      <div className="relative z-[1000] mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 pb-14 sm:pb-16">
         {/* Mobile: título → subtítulo (empurrado para baixo) → CTAs → microbenefícios.
             Desktop (lg+): título e subtítulo lado a lado no topo; microbenefícios
             e CTAs numa segunda "linha" ancorada embaixo, perto dos pés do personagem. */}
@@ -172,7 +173,7 @@ export default function Hero() {
       {/* Indicador de scroll (reforça o gesto do personagem) */}
       <div
         aria-hidden
-        className="absolute inset-x-0 bottom-5 z-10 flex justify-center"
+        className="absolute inset-x-0 bottom-5 z-[1000] flex justify-center"
       >
         <span className="animate-bounce text-text-faint">
           <Icon icon="solar:double-alt-arrow-down-linear" className="text-2xl" />
