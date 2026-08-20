@@ -4,6 +4,8 @@ import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPr
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
+import { prefersReducedMotion } from '@/lib/motion';
+
 import './Hyperspeed.css';
 
 const DEFAULT_EFFECT_OPTIONS = {
@@ -357,7 +359,7 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
 
         /* Sob prefers-reduced-motion desenhamos UM quadro e paramos o loop:
            a cena continua visível (não some), mas nada se move. */
-        this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this.reducedMotion = prefersReducedMotion();
 
         const initW = Math.max(1, container.offsetWidth);
         const initH = Math.max(1, container.offsetHeight);

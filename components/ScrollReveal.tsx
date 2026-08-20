@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { prefersReducedMotion } from "@/lib/motion";
 
 type Direction = "up" | "down" | "left" | "right" | "none";
 
@@ -50,7 +51,7 @@ export default function ScrollReveal({
     const node = ref.current;
     if (!node) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (prefersReducedMotion()) {
       setIsVisible(true);
       return;
     }

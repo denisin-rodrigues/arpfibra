@@ -7,6 +7,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { site } from "@/lib/site";
 import { HYPERSPEED_PRESET_FIVE } from "@/lib/hyperspeed-presets";
+import { prefersReducedMotion } from "@/lib/motion";
 
 /* Carregado sob demanda: three + postprocessing somam ~700 KB, e nada disso
    precisa estar no bundle inicial nem rodar no servidor (usa WebGL). */
@@ -44,6 +45,14 @@ export default function FramedVideo() {
     const sec = section.current;
     if (!sec) return;
 
+    // Política central de movimento: ver lib/motion.ts.
+    if (prefersReducedMotion()) {
+      // O vídeo já sangra a tela pelo CSS, mas as frases de conforto nascem
+      // com visibility:hidden e só o GSAP as revela.
+      gsap.set(overlay.current, { autoAlpha: 1, y: 0 });
+      return;
+    }
+
     const mm = gsap.matchMedia(sec);
 
     mm.add(
@@ -51,24 +60,14 @@ export default function FramedVideo() {
         isDesktop: "(min-width: 1024px)",
         // `isMobile` parece redundante com `isDesktop`, mas o gsap.matchMedia
         // só executa o callback quando ALGUMA condição casa. Sem ele, um
-        // celular com movimento habilitado não casaria nada e a seção ficaria
-        // inteiramente sem animação.
+        // celular não casaria nada e a seção ficaria sem animação nenhuma.
         isMobile: "(max-width: 1023px)",
-        reduce: "(prefers-reduced-motion: reduce)",
       },
       (ctx) => {
-        const { isDesktop, reduce } = ctx.conditions as {
+        const { isDesktop } = ctx.conditions as {
           isDesktop: boolean;
           isMobile: boolean;
-          reduce: boolean;
         };
-
-        if (reduce) {
-          // Sem animação: o vídeo já sangra a tela pelo CSS, mas as frases
-          // de conforto nascem com visibility:hidden e só o GSAP as revela.
-          gsap.set(overlay.current, { autoAlpha: 1, y: 0 });
-          return;
-        }
 
         /* Recorte inicial do vídeo: um card centralizado que cresce até
            sangrar a tela. No desktop o elemento já é um 16:9 da altura do

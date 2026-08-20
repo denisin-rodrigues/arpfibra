@@ -333,13 +333,15 @@
   margin-bottom: -0.12em;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
-  .reveal-init { opacity: 1 !important; transform: none !important; }
-  .split-word { transform: none !important; opacity: 1 !important; }
-}
+/* O bloco @media (prefers-reduced-motion: reduce) que zerava animation- e
+   transition-duration no site inteiro foi removido junto com a decisão
+   registrada em lib/motion.ts (RESPECT_REDUCED_MOTION = false).
+
+   Ele não era só redundante: o `transition-duration: 0.001ms !important`
+   em `*` vencia até estilos inline, o que anulava as transições que o
+   ScrollReveal aplica via style={{ transition: ... }}. Ou seja, mesmo
+   removendo a checagem em JS, as revelações continuariam instantâneas
+   enquanto esta regra existisse.
+
+   Para voltar a respeitar a preferência do sistema, restaure este bloco
+   E troque RESPECT_REDUCED_MOTION para true — os dois andam juntos. */
