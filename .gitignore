@@ -43,3 +43,7 @@ next-env.d.ts
 # Master 4K da cortina de carregamento: pesa 3,5 MB e nao e servido.
 # O que vai ao ar e o public/carregando.mp4, derivado dele por ffmpeg.
 public/PLACEHOAD.mp4
+
+# Master do video da section 2 (12,5 MB a ~10 Mbps). O que vai ao ar e o
+# public/segundovideo.mp4, reencodado dele por ffmpeg na mesma resolucao.
+public/segundo video.mp4
