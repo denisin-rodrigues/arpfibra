@@ -203,6 +203,40 @@
     --color-line-strong: rgba(255, 255, 255, 0.4);
   }
 
+  /* Brasas da seção do Instagram. Sobem, oscilam de leve para os lados e
+     apagam antes do fim do curso, então nunca se vê uma "voltar" ao ponto
+     de partida — o ciclo reinicia com a bolinha já invisível.
+     Só transform e opacity: as duas propriedades que o navegador anima na
+     GPU sem recalcular layout, o que importa com 26 delas na tela. */
+  @keyframes igEmber {
+    0%   { transform: translate3d(0, 0, 0) scale(0.4); opacity: 0; }
+    15%  { opacity: var(--ig-peak); }
+    50%  { transform: translate3d(var(--ig-drift), calc(var(--ig-rise) * -0.5), 0) scale(1); }
+    80%  { opacity: var(--ig-peak); }
+    100% { transform: translate3d(0, calc(var(--ig-rise) * -1), 0) scale(0.4); opacity: 0; }
+  }
+  .ig-ember {
+    position: absolute;
+    border-radius: 9999px;
+    background: #ff7a3c;
+    box-shadow: 0 0 6px 1px rgba(255, 120, 50, 0.5);
+    opacity: 0;
+    animation-name: igEmber;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  /* Carrossel do Instagram. A lista e renderizada DUAS vezes e o trilho anda
+     exatamente -50% da propria largura: no fim do ciclo a segunda copia esta
+     no lugar onde a primeira comecou, entao a volta e invisivel. Em CSS, e nao
+     em JS, porque nao depende de rolagem nem de estado. */
+  @keyframes igMarquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .ig-marquee { animation: igMarquee 32s linear infinite; }
+  .ig-marquee:hover { animation-play-state: paused; }
+
   /* ---------- Cortina de carregamento ----------
      O fade fica no CSS, e não no JS, para a cortina sumir sozinha mesmo se o
      script falhar ou o autoplay do vídeo for bloqueado — caso contrário o
@@ -215,7 +249,7 @@
     background: #000;
     display: grid;
     place-items: center;
-    animation: splash-out 500ms ease 2100ms forwards;
+    animation: splash-out 500ms ease 3000ms forwards;
   }
   /* `contain`, e não `cover`: o vídeo é 16:9 e a tela raramente é, então
      `cover` ampliava para preencher e cortava as laterais da logo. Como o

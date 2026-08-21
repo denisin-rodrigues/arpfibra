@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 
-/* Duração do vídeo (2,18s) arredondada para baixo, para o fade começar
+/* Duração do vídeo (3,07s) arredondada para baixo, para o fade começar
    enquanto o último quadro ainda está na tela em vez de depois de um
-   congelamento. Precisa bater com o `animation-delay` de .splash no CSS. */
-const VIDEO_MS = 2100;
+   congelamento. Precisa bater com o `animation-delay` de .splash no CSS —
+   os dois mudam juntos sempre que a peça for trocada. */
+const VIDEO_MS = 3000;
 const FADE_MS = 500;
 
 export default function LoadingSplash() {
