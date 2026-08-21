@@ -29,6 +29,7 @@ export default function FramedVideo() {
   const frame = useRef<HTMLDivElement>(null);
   const frameInner = useRef<HTMLDivElement>(null);
   const topFade = useRef<HTMLDivElement>(null);
+  const phoneFrame = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -114,6 +115,12 @@ export default function FramedVideo() {
             0
           );
         } else {
+          /* No mobile o vídeo termina cobrindo a tela, então a moldura do
+             celular dissolve junto com a expansão — senão o aparelho acabaria
+             abraçando as bordas da tela. No desktop o quadro continua sendo um
+             painel, e por isso a moldura fica. */
+          tl.to(phoneFrame.current, { autoAlpha: 0, duration: 0.5, ease: "none" }, 0);
+
           // Mobile: sequência original — intro sai, frases entram depois.
           tl.to(intro.current, { autoAlpha: 0, y: -30, ease: "none" }, 0);
           tl.fromTo(
@@ -202,6 +209,32 @@ export default function FramedVideo() {
                   "linear-gradient(0deg, rgba(8,8,10,0.85) 0%, rgba(8,8,10,0) 45%)",
               }}
             />
+
+            {/* Moldura de celular. É uma SOBREPOSIÇÃO desenhada com box-shadow
+                inset, e não padding: assim ela não ocupa espaço de layout, o
+                vídeo continua preenchendo a caixa inteira e a moldura pode
+                sumir sozinha sem deixar borda vazia. As camadas do inset são,
+                de dentro para fora, o corpo escuro, um fio de luz simulando o
+                brilho do metal, e a lateral do aparelho. */}
+            <div
+              ref={phoneFrame}
+              aria-hidden
+              className="pointer-events-none absolute inset-0 z-10 rounded-[2rem]"
+              style={{
+                boxShadow:
+                  "inset 0 0 0 7px #0b0b0e, inset 0 0 0 8px rgba(255,255,255,0.16), inset 0 0 0 13px #17171b, inset 0 0 0 14px rgba(255,255,255,0.06)",
+              }}
+            >
+              {/* Ilha dinâmica. Medidas em %, e não em px, para acompanharem a
+                  escala do quadro e manterem a proporção de um aparelho real:
+                  ~30% da largura e ~3% da altura. Em px fixos ela encolhia
+                  para 12% da largura no painel do desktop. */}
+              <span className="absolute left-1/2 top-[2%] h-[3%] w-[30%] -translate-x-1/2 rounded-full bg-[#0b0b0e]" />
+              {/* Botões laterais */}
+              <span className="absolute right-[-1px] top-[22%] h-[9%] w-[3px] rounded-l-sm bg-[#26262c]" />
+              <span className="absolute left-[-1px] top-[18%] h-[5%] w-[3px] rounded-r-sm bg-[#26262c]" />
+              <span className="absolute left-[-1px] top-[26%] h-[8%] w-[3px] rounded-r-sm bg-[#26262c]" />
+            </div>
           </div>
         </div>
 
