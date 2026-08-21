@@ -60,10 +60,6 @@ export default function FramedVideo() {
         };
 
         const stageEl = sec.querySelector<HTMLElement>(".fv-stage")!;
-        /* Largura que o quadro 16:9 precisa ter para COBRIR o palco. Numa tela
-           mais larga que 16:9 quem manda é a largura; numa mais alta, a altura.
-           É o mesmo cálculo do `object-fit: cover`, feito à mão porque aqui
-           quem cresce é a caixa, não o conteúdo dentro dela. */
         /* Largura do quadro na escala 1. O vídeo é 9:16 nos dois breakpoints.
            Desktop: painel de altura cheia, largura derivada da proporção.
            Mobile: a largura que COBRE a tela — o mesmo cálculo do object-fit
@@ -228,17 +224,16 @@ export default function FramedVideo() {
           </div>
         </div>
 
-        {/* Frases de conforto + CTA sobre o vídeo de fundo. No mobile ganham
-            o mesmo painel liquid glass do card de intro (fonte menor,
-            fundo sólido) para legibilidade; no desktop seguem soltas
-            sobre o vídeo, com texto branco (já tem scrim escuro por trás). */}
+        {/* Frases de conforto + CTA. Sem painel, como o card de intro: o texto
+            assenta direto sobre o Lightfall, em branco. O "E você? Só
+            aproveitando." e o botão seguem laranja. */}
         <div
           ref={overlay}
           className="absolute bottom-0 z-20 w-full max-w-2xl px-5 pb-10 text-center lg:bottom-auto lg:left-auto lg:right-[2.5%] lg:top-1/2 lg:w-[20%] lg:max-w-none lg:-translate-y-1/2 lg:px-0 lg:pb-0 xl:right-[4%] xl:w-[22%]"
           style={{ visibility: "hidden" }}
         >
-          <div className="rounded-[2rem] border border-white/60 bg-white/90 px-5 py-6 shadow-[0_20px_60px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:px-6 lg:py-7">
-            <div className="mb-4 flex flex-wrap justify-center gap-x-3 gap-y-1 font-display text-sm font-medium text-[#1b1410] sm:text-base lg:mb-5 lg:gap-x-3 lg:text-base">
+          <div className="px-5 py-6 lg:px-6 lg:py-7">
+            <div className="mb-4 flex flex-wrap justify-center gap-x-3 gap-y-1 font-display text-sm font-medium text-white sm:text-base lg:mb-5 lg:gap-x-3 lg:text-base">
               {scenes.map((s) => (
                 <span key={s}>{s}</span>
               ))}
