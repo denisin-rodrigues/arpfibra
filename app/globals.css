@@ -173,13 +173,9 @@
     .fv-title { font-size: clamp(1.3rem, 1.9vw, 1.9rem); }
   }
 
-  /* Vídeo da section 2: no desktop o elemento tem exatamente o tamanho do
-     vídeo (16:9), então a máscara esfuma as bordas laterais reais dele,
-     dissolvendo no fundo branco do palco. No mobile não se aplica: lá o
-     vídeo é vertical e preenche a tela inteira. */
   /* O esfumado lateral do vídeo da section 2 foi removido. Ele existia para
      dissolver as bordas reais do vídeo no palco BRANCO do desktop. Com o palco
-     escuro (Hyperspeed), ele passou a revelar preto — e desde que o quadro
+     escuro (Lightfall), ele passou a revelar preto — e desde que o quadro
      cresce até cobrir o palco inteiro, não há mais borda de vídeo dentro da
      tela para dissolver. A classe .fv-video-mask segue no JSX apenas como
      gancho de seleção. */

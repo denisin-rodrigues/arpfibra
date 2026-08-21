@@ -6,12 +6,12 @@ import { Icon } from "@iconify/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { site } from "@/lib/site";
-import { HYPERSPEED_PRESET_FIVE } from "@/lib/hyperspeed-presets";
+import { LIGHTFALL_SECTION2 } from "@/lib/lightfall-preset";
 import { prefersReducedMotion } from "@/lib/motion";
 
-/* Carregado sob demanda: three + postprocessing somam ~700 KB, e nada disso
-   precisa estar no bundle inicial nem rodar no servidor (usa WebGL). */
-const Hyperspeed = dynamic(() => import("./Hyperspeed"), { ssr: false });
+/* Carregado sob demanda: precisa de WebGL, então não pode rodar no servidor,
+   e manter o ogl fora do bundle inicial adianta a primeira renderização. */
+const Lightfall = dynamic(() => import("./Lightfall"), { ssr: false });
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
@@ -144,7 +144,7 @@ export default function FramedVideo() {
             O #08080a acima continua como base — cobre o instante antes do
             WebGL subir e casa com o fog preto do próprio efeito. */}
         <div className="absolute inset-0 z-0">
-          <Hyperspeed effectOptions={HYPERSPEED_PRESET_FIVE} />
+          <Lightfall {...LIGHTFALL_SECTION2} />
         </div>
 
         {/* Vídeo como fundo da seção. Duas versões: horizontal (16:9) no
@@ -201,7 +201,7 @@ export default function FramedVideo() {
           className="pointer-events-none absolute z-20 w-full max-w-2xl px-5 lg:left-[2.5%] lg:top-1/2 lg:w-[20%] lg:max-w-none lg:-translate-y-1/2 lg:px-0 xl:left-[4%] xl:w-[22%]"
         >
           {/* O painel liquid glass vale nos dois breakpoints: com o palco
-              escuro (Hyperspeed), o título ficaria quase da mesma cor do fundo
+              escuro (Lightfall), o título ficaria quase da mesma cor do fundo
               sem ele. O deslocamento -105% segue exclusivo do mobile. */}
           <div className="-translate-y-[105%] rounded-[2rem] border border-white/60 bg-white/90 px-5 py-6 text-center shadow-[0_20px_60px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:translate-y-0 lg:px-6 lg:py-7">
             <p className="text-eyebrow mb-3 text-orange lg:mb-4">
