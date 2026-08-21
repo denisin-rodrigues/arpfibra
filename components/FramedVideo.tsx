@@ -18,6 +18,7 @@ export default function FramedVideo() {
   const section = useRef<HTMLDivElement>(null);
   const topFade = useRef<HTMLDivElement>(null);
   const devices = useRef<HTMLDivElement>(null);
+  const earth = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sec = section.current;
@@ -74,6 +75,8 @@ export default function FramedVideo() {
 
         // Os dispositivos saem de cena conforme a seção avança.
         tl.to(devices.current, { autoAlpha: 0, y: -30, ease: "none" }, 0);
+        // A Terra só esmaece: deslizar para cima quebraria a leitura de chão.
+        tl.to(earth.current, { autoAlpha: 0, ease: "none" }, 0);
       }
     );
 
@@ -107,6 +110,24 @@ export default function FramedVideo() {
               "linear-gradient(180deg, #08080a 0%, rgba(8,8,10,0.72) 38%, rgba(8,8,10,0) 100%)",
           }}
         />
+
+        {/* Horizonte da Terra ancorado na base da seção. z-[12] o deixa acima
+            do Lightfall e do véu, mas ABAIXO dos dispositivos (z-[15]) — assim
+            eles flutuam sobre o planeta em vez de sumirem atrás dele. A peça
+            já tem o topo transparente, então dissolve sozinha no fundo. */}
+        <div
+          ref={earth}
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-[12]"
+        >
+          <Image
+            src="/terra.webp"
+            alt=""
+            width={1920}
+            height={640}
+            className="w-full"
+          />
+        </div>
 
         {/* Dispositivos 3D, na mesma disposição da peça de referência:
             controle e TV à esquerda, notebook e fone à direita. Os de baixo
