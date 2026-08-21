@@ -2,10 +2,9 @@
 
 import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
-import { Icon } from "@iconify/react";
+import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { site } from "@/lib/site";
 import { LIGHTFALL_SECTION2 } from "@/lib/lightfall-preset";
 import { prefersReducedMotion } from "@/lib/motion";
 
@@ -15,46 +14,48 @@ const Lightfall = dynamic(() => import("./Lightfall"), { ssr: false });
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
-const scenes = [
-  "Filme rodando.",
-  "Videochamada acontecendo.",
-  "Celular conectado.",
-  "Casa inteira online.",
-];
-
 export default function FramedVideo() {
   const section = useRef<HTMLDivElement>(null);
-  const overlay = useRef<HTMLDivElement>(null);
   const intro = useRef<HTMLDivElement>(null);
   const topFade = useRef<HTMLDivElement>(null);
+  const devices = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sec = section.current;
     if (!sec) return;
 
     // Política central de movimento: ver lib/motion.ts.
-    if (prefersReducedMotion()) {
-      // O vídeo já sangra a tela pelo CSS, mas as frases de conforto nascem
-      // com visibility:hidden e só o GSAP as revela.
-      gsap.set(overlay.current, { autoAlpha: 1, y: 0 });
-      return;
-    }
+    if (prefersReducedMotion()) return;
 
     const mm = gsap.matchMedia(sec);
 
     mm.add(
       {
+        /* As duas condições cobrem toda a faixa de larguras de propósito: o
+           gsap.matchMedia só executa o callback quando ALGUMA delas casa, e
+           sem a de mobile um celular não casaria nada — a seção ficaria sem
+           animação nenhuma. */
         isDesktop: "(min-width: 1024px)",
-        // `isMobile` parece redundante com `isDesktop`, mas o gsap.matchMedia
-        // só executa o callback quando ALGUMA condição casa. Sem ele, um
-        // celular não casaria nada e a seção ficaria sem animação nenhuma.
         isMobile: "(max-width: 1023px)",
       },
-      (ctx) => {
-        const { isDesktop } = ctx.conditions as {
-          isDesktop: boolean;
-          isMobile: boolean;
-        };
+      () => {
+        /* Flutuação contínua dos dispositivos. Amplitude, duração e atraso
+           diferentes por item de propósito: em sincronia os dois subiriam e
+           desceriam juntos, o que denuncia o laço na hora. yPercent em vez de
+           y para a amplitude acompanhar o tamanho do ícone em cada tela. */
+        gsap.utils
+          .toArray<HTMLElement>(devices.current!.children)
+          .forEach((el, i) => {
+            gsap.to(el, {
+              yPercent: i === 0 ? -7 : -9,
+              rotation: i === 0 ? 2.5 : -2.5,
+              duration: 3.4 + i * 0.9,
+              ease: "sine.inOut",
+              repeat: -1,
+              yoyo: true,
+              delay: i * 0.6,
+            });
+          });
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -72,25 +73,12 @@ export default function FramedVideo() {
           0
         );
 
-        if (isDesktop) {
-          /* Os dois cards ladeiam o centro do palco e nascem visíveis juntos,
-             saindo de cena conforme a seção avança. */
-          gsap.set(overlay.current, { autoAlpha: 1, y: 0 });
-          tl.to(
-            [intro.current, overlay.current],
-            { autoAlpha: 0, y: -30, ease: "none" },
-            0
-          );
-        } else {
-          // Mobile: sequência original — intro sai, frases entram depois.
-          tl.to(intro.current, { autoAlpha: 0, y: -30, ease: "none" }, 0);
-          tl.fromTo(
-            overlay.current,
-            { autoAlpha: 0, y: 40 },
-            { autoAlpha: 1, y: 0, ease: "power2.out" },
-            0.55
-          );
-        }
+        // Texto e dispositivos saem de cena conforme a seção avança.
+        tl.to(
+          [intro.current, devices.current],
+          { autoAlpha: 0, y: -30, ease: "none" },
+          0
+        );
       }
     );
 
@@ -125,6 +113,29 @@ export default function FramedVideo() {
           }}
         />
 
+        {/* Dispositivos 3D, na disposição da peça de referência: controle à
+            esquerda, notebook à direita. Ficam na faixa superior porque as
+            duas colunas de texto são centradas na vertical — no desktop elas
+            ocupam a altura do meio, e no mobile o intro e as frases tomam de
+            40% para baixo, então a faixa de cima é o espaço que sobra.
+            z-[15]: acima do véu e do Lightfall, abaixo do texto. */}
+        <div ref={devices} aria-hidden className="pointer-events-none absolute inset-0 z-[15]">
+          <Image
+            src="/icons/controle-3d.png"
+            alt=""
+            width={620}
+            height={413}
+            className="absolute left-[4%] top-[7%] w-[36%] max-w-[300px] -rotate-6 lg:left-[9%] lg:top-[8%] lg:w-[17%]"
+          />
+          <Image
+            src="/icons/notebook-3d.png"
+            alt=""
+            width={620}
+            height={528}
+            className="absolute right-[4%] top-[9%] w-[38%] max-w-[320px] rotate-3 lg:right-[9%] lg:top-[10%] lg:w-[18%]"
+          />
+        </div>
+
         {/* Título introdutório. O deslocamento e o painel "liquid glass" ficam
             no filho porque o GSAP controla o transform do elemento com ref. */}
         <div
@@ -144,34 +155,6 @@ export default function FramedVideo() {
           </div>
         </div>
 
-        {/* Frases de conforto + CTA. Sem painel, como o card de intro: o texto
-            assenta direto sobre o Lightfall, em branco. O "E você? Só
-            aproveitando." e o botão seguem laranja. */}
-        <div
-          ref={overlay}
-          className="absolute bottom-0 z-20 w-full max-w-2xl px-5 pb-10 text-center lg:bottom-auto lg:left-auto lg:right-[2.5%] lg:top-1/2 lg:w-[20%] lg:max-w-none lg:-translate-y-1/2 lg:px-0 lg:pb-0 xl:right-[4%] xl:w-[22%]"
-          style={{ visibility: "hidden" }}
-        >
-          <div className="px-5 py-6 lg:px-6 lg:py-7">
-            <div className="mb-4 flex flex-wrap justify-center gap-x-3 gap-y-1 font-display text-sm font-medium text-white sm:text-base lg:mb-5 lg:gap-x-3 lg:text-base">
-              {scenes.map((s) => (
-                <span key={s}>{s}</span>
-              ))}
-            </div>
-            <p className="mb-5 font-display text-lg font-semibold text-orange sm:text-xl lg:mb-6 lg:text-lg">
-              E você? Só aproveitando.
-            </p>
-            <a
-              href={site.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary pointer-events-auto"
-            >
-              <Icon icon="solar:heart-bold" className="text-lg" />
-              Quero viver conectado
-            </a>
-          </div>
-        </div>
       </div>
     </section>
   );
