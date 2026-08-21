@@ -120,19 +120,9 @@ export default function Hero() {
             Desktop (lg+): título e subtítulo lado a lado no topo; microbenefícios
             e CTAs numa segunda "linha" ancorada embaixo, perto dos pés do personagem. */}
         <div className="flex flex-1 flex-col lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-10 lg:gap-y-8">
-          {/* HEAD — badge e título entram da esquerda, escalonados */}
+          {/* HEAD — o título entra da esquerda */}
           <div className="mx-auto max-w-sm pt-2 text-center lg:mx-0 lg:max-w-lg lg:-translate-x-[85%]">
             <ScrollReveal direction="left" delay={0}>
-              <p
-                className="text-eyebrow mb-5 hidden w-fit items-center gap-2 bg-white px-4 py-2 text-orange-deep shadow-[0_4px_16px_-4px_rgba(0,0,0,0.35)] lg:inline-flex lg:mx-auto"
-                style={{ fontSize: "0.8rem" }}
-              >
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-orange" />
-                Fibra óptica para o seu dia a dia
-              </p>
-            </ScrollReveal>
-
-            <ScrollReveal direction="left" delay={150}>
               <h1 className="text-hero-compact -translate-y-[50%] font-bold lg:translate-y-0">
                 <span className="text-glow">Sua vida acontece rápido.</span>{" "}
                 <span className="text-text-dim">Sua internet também deveria.</span>
