@@ -160,10 +160,9 @@
   .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
 
-  /* Título da section 2: vive num painel estreito nos dois breakpoints, então
+  /* Título da section 2: vive numa coluna estreita (~20vw no desktop), então
      não pode usar o tamanho cheio de .text-section (clamp(2rem, 4.6vw, 3.9rem)).
-     No desktop o painel virou uma coluna lateral de ~20vw ladeando o vídeo —
-     a 3.9rem a manchete quebrava em tantas linhas que o card chegava a 809px
+     A 3.9rem a manchete quebrava em tantas linhas que o bloco chegava a 809px
      de altura num palco de 910. (Não dá para mexer em .text-section, usada
      por todas as seções.) */
   @media (max-width: 1023px) {
@@ -172,13 +171,6 @@
   @media (min-width: 1024px) {
     .fv-title { font-size: clamp(1.3rem, 1.9vw, 1.9rem); }
   }
-
-  /* O esfumado lateral do vídeo da section 2 foi removido. Ele existia para
-     dissolver as bordas reais do vídeo no palco BRANCO do desktop. Com o palco
-     escuro (Lightfall), ele passou a revelar preto — e desde que o quadro
-     cresce até cobrir o palco inteiro, não há mais borda de vídeo dentro da
-     tela para dissolver. A classe .fv-video-mask segue no JSX apenas como
-     gancho de seleção. */
 
   /* Máscara do vídeo do hero: bordas laterais esfumadas para dissolver no
      fundo borrado. No mobile o vídeo é guiado pela largura, então as bordas
