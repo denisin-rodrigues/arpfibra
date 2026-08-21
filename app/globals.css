@@ -203,6 +203,24 @@
     --color-line-strong: rgba(255, 255, 255, 0.4);
   }
 
+  /* Ícones de Wi-Fi flutuando na hero. Em CSS, e não no GSAP como os
+     aparelhos da section 2, porque aqui não depende de rolagem nem de
+     estado — é um laço de tempo puro e não precisa carregar JS.
+
+     Os dois têm durações que NÃO são múltiplas uma da outra (7s e 9,5s) e
+     o segundo ainda começa adiantado: em sincronia os dois subiriam e
+     desceriam juntos, o que denuncia o laço na hora. */
+  @keyframes heroFloatA {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(-4deg); }
+    50%      { transform: translate3d(0, -18px, 0) rotate(2deg); }
+  }
+  @keyframes heroFloatB {
+    0%, 100% { transform: translate3d(0, 0, 0) rotate(3deg); }
+    50%      { transform: translate3d(0, -13px, 0) rotate(-3deg); }
+  }
+  .hero-float-a { animation: heroFloatA 7s ease-in-out infinite; }
+  .hero-float-b { animation: heroFloatB 9.5s ease-in-out -2.5s infinite; }
+
   /* Brasas da seção do Instagram. Sobem, oscilam de leve para os lados e
      apagam antes do fim do curso, então nunca se vê uma "voltar" ao ponto
      de partida — o ciclo reinicia com a bolinha já invisível.

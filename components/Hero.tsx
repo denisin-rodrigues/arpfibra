@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Icon } from "@iconify/react";
 import { site } from "@/lib/site";
 import ScrollReveal from "./ScrollReveal";
@@ -110,6 +111,36 @@ export default function Hero() {
             background:
               "linear-gradient(to right, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.12) 22%, rgba(255,255,255,0) 32%, rgba(255,255,255,0) 68%, rgba(255,255,255,0.12) 78%, rgba(255,255,255,0.12) 100%)",
           }}
+        />
+      </div>
+
+      {/* Ícones de Wi-Fi flutuando. As posições saíram de medir o que já
+          está ocupado, e não de chute. No desktop sobram os cantos: o
+          esquerdo alto (a navbar só começa em 15% e o título em 28%) e o
+          direito baixo (o subtítulo acaba em 50% e os micro-benefícios
+          ficam entre 32% e 68%). No mobile as faixas horizontais estão
+          todas tomadas, então os dois vão para as BORDAS laterais, na
+          altura do mascote, onde só há fundo.
+
+          h-auto é obrigatório: o next/image escreve width/height no <img>,
+          e sem ele a largura em % conviveria com 736px de altura fixa.
+
+          Vem depois dos scrims e antes do conteúdo no DOM, então pinta
+          sobre o vídeo e por baixo do texto sem precisar de z-index. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <Image
+          src="/wifi-3d.webp"
+          alt=""
+          width={320}
+          height={320}
+          className="hero-float-a absolute left-[3%] top-[30%] h-auto w-[19%] max-w-[84px] opacity-90 lg:left-[6%] lg:top-[11%] lg:w-[8%] lg:max-w-[140px]"
+        />
+        <Image
+          src="/wifi-3d.webp"
+          alt=""
+          width={320}
+          height={320}
+          className="hero-float-b absolute right-[3%] top-[50%] h-auto w-[15%] max-w-[68px] opacity-90 lg:right-[7%] lg:top-[62%] lg:w-[6.5%] lg:max-w-[116px]"
         />
       </div>
 
