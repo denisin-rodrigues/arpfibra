@@ -43,7 +43,9 @@ export default function Navbar() {
     >
       <nav
         aria-label="Principal"
-        className="glass mx-auto flex w-full max-w-6xl items-center justify-center gap-8 rounded-full px-6 py-2.5 shadow-[0_2px_20px_-6px_rgba(24,14,8,0.15)] transition-all duration-500 sm:gap-14 sm:px-10 sm:py-3"
+        /* lg:rounded-none — quadrada no desktop, pílula no mobile. O `glass`
+           (blur + saturação) segue em ambos. */
+        className="glass mx-auto flex w-full max-w-6xl items-center justify-center gap-8 rounded-full px-6 py-2.5 shadow-[0_2px_20px_-6px_rgba(24,14,8,0.15)] transition-all duration-500 sm:gap-14 sm:px-10 sm:py-3 lg:rounded-none"
       >
         <a
           href="#top"

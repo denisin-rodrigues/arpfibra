@@ -122,10 +122,14 @@
   }
 
   /* Vidro claro (navbar / botões fantasma sobre mídia) */
+  /* O prefixo -webkit- vem ANTES da propriedade padrão de propósito. Na ordem
+     inversa o minificador do build colapsava as duas e mantinha só a
+     prefixada, e o Chrome — que lê a padrão — ficava sem blur nenhum: a
+     navbar aparecia como um retângulo translúcido chapado, sem vidro. */
   .glass {
     background: color-mix(in srgb, #ffffff 72%, transparent);
-    backdrop-filter: blur(18px) saturate(1.2);
     -webkit-backdrop-filter: blur(18px) saturate(1.2);
+    backdrop-filter: blur(18px) saturate(1.2);
     border: 1px solid var(--color-line);
     box-shadow: 0 8px 30px -14px rgba(24, 14, 8, 0.25);
   }

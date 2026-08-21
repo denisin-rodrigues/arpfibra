@@ -6,12 +6,17 @@ import ScrollReveal from "./ScrollReveal";
 import { site } from "@/lib/site";
 
 /* Faixa de fotos do Instagram.
-   Solte os arquivos em public/instagram/ e liste aqui — a faixa some sozinha
-   enquanto a lista estiver vazia, para a seção nunca ir ao ar com um vão
-   branco no lugar das imagens. A ordem é a de exibição; 4 a 6 fotos
-   preenchem bem, porque as das pontas são cortadas de propósito. */
-const photos: { src: string; alt: string }[] = [
-  // { src: "/instagram/01.jpg", alt: "Equipe ARP em campo" },
+   Cada item é um cartão. Para preencher, solte o arquivo em
+   public/instagram/ e troque o `src: null` pelo caminho, junto com um `alt`
+   que descreva a cena. Slots com src null aparecem como cartão vazio.
+   Cinco é o número que fecha o desenho: os das pontas sangram para fora e
+   esvanecem, então sobram três inteiros no centro. */
+const photos: { src: string | null; alt: string }[] = [
+  { src: null, alt: "" },
+  { src: null, alt: "" },
+  { src: null, alt: "" },
+  { src: null, alt: "" },
+  { src: null, alt: "" },
 ];
 
 /* Posições fixas, e não Math.random(): valores sorteados no render sairiam
@@ -54,33 +59,46 @@ export default function InstagramCta() {
         ))}
       </div>
 
-      {photos.length > 0 && (
-        /* overflow-hidden + justify-center: a fileira é mais larga que a
-           seção, então sobra igual dos dois lados e as fotos das pontas
-           aparecem cortadas — é esse corte que dá a sensação de continuar
-           para fora da tela. */
-        <div className="relative mb-16 overflow-hidden">
-          <div className="flex justify-center gap-4 px-4">
-            {photos.map((p, i) => (
-              <div
-                key={p.src}
-                className="relative h-56 w-72 shrink-0 overflow-hidden rounded-sm sm:h-72 sm:w-96"
-                /* Desencontro vertical leve para a fileira não virar uma
-                   régua reta. */
-                style={{ transform: `translateY(${i % 2 === 0 ? 0 : 14}px)` }}
-              >
+      {/* overflow-hidden + justify-center: a fileira é mais larga que a seção,
+          então sobra igual dos dois lados e os cartões das pontas ficam
+          cortados — é o que dá a sensação de continuar para fora da tela.
+          A máscara transforma esse corte seco num esvanecimento, como na
+          referência. rgba(0,0,0,0) em vez de `transparent` por consistência
+          com o resto do projeto. */}
+      <div
+        className="relative mb-14 overflow-hidden"
+        style={{
+          WebkitMaskImage:
+            "linear-gradient(to right, rgba(0,0,0,0) 0%, #000 13%, #000 87%, rgba(0,0,0,0) 100%)",
+          maskImage:
+            "linear-gradient(to right, rgba(0,0,0,0) 0%, #000 13%, #000 87%, rgba(0,0,0,0) 100%)",
+        }}
+      >
+        <div className="flex justify-center gap-3 sm:gap-4">
+          {photos.map((p, i) => (
+            <div
+              key={i}
+              className="relative aspect-[3/4] w-44 shrink-0 overflow-hidden rounded-sm bg-white/[0.04] ring-1 ring-inset ring-white/10 sm:w-56 lg:w-72"
+            >
+              {p.src ? (
                 <Image
                   src={p.src}
                   alt={p.alt}
                   fill
-                  sizes="(min-width: 640px) 384px, 288px"
+                  sizes="(min-width: 1024px) 288px, (min-width: 640px) 224px, 176px"
                   className="object-cover"
                 />
-              </div>
-            ))}
-          </div>
+              ) : (
+                /* Cartão vazio à espera da foto. Discreto de propósito: some
+                   no fundo escuro em vez de gritar "faltando". */
+                <span className="absolute inset-0 grid place-items-center text-white/15">
+                  <Icon icon="solar:gallery-wide-linear" className="text-3xl" />
+                </span>
+              )}
+            </div>
+          ))}
         </div>
-      )}
+      </div>
 
       <div className="relative mx-auto max-w-3xl px-5 text-center">
         <ScrollReveal direction="up">
