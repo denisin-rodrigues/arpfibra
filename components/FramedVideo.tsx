@@ -170,17 +170,23 @@ export default function FramedVideo() {
             atrás do globo (12) e dos aparelhos (15) — é pano de fundo, não
             conteúdo. As frases ficam empilhadas no mesmo ponto e só uma
             aparece por vez. data-parallax baixo: deriva devagar, o que
-            reforça a sensação de estar lá no fundo. */}
+            reforça a sensação de estar lá no fundo.
+
+            O pb sobe o texto encurtando a área de centralização, em vez de um
+            translate: o GSAP já anima `y` neste elemento e nos spans, e um
+            translate do Tailwind entraria em conflito. A unidade é vh, e não
+            %, porque padding percentual resolve contra a LARGURA do bloco —
+            em % o deslocamento mudava conforme a proporção da tela. */}
         <div
           ref={bgText}
           data-parallax="8"
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-[8] grid place-items-center px-6"
+          className="pointer-events-none absolute inset-0 z-[8] grid place-items-center px-6 pb-[22vh]"
         >
           {frases.map((f) => (
             <span
               key={f}
-              className="col-start-1 row-start-1 text-center font-display text-[clamp(1.8rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-tight text-white/[0.07]"
+              className="col-start-1 row-start-1 text-center font-display text-[clamp(1.8rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-tight text-white/[0.45]"
             >
               {f}
             </span>
