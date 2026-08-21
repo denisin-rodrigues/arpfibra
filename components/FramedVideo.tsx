@@ -16,7 +16,6 @@ if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
 export default function FramedVideo() {
   const section = useRef<HTMLDivElement>(null);
-  const intro = useRef<HTMLDivElement>(null);
   const topFade = useRef<HTMLDivElement>(null);
   const devices = useRef<HTMLDivElement>(null);
 
@@ -47,13 +46,13 @@ export default function FramedVideo() {
           .toArray<HTMLElement>(devices.current!.children)
           .forEach((el, i) => {
             gsap.to(el, {
-              yPercent: i === 0 ? -7 : -9,
-              rotation: i === 0 ? 2.5 : -2.5,
-              duration: 3.4 + i * 0.9,
+              yPercent: -6 - (i % 3) * 1.5,
+              rotation: i % 2 === 0 ? 2.5 : -2.5,
+              duration: 3.2 + i * 0.7,
               ease: "sine.inOut",
               repeat: -1,
               yoyo: true,
-              delay: i * 0.6,
+              delay: i * 0.45,
             });
           });
 
@@ -73,12 +72,8 @@ export default function FramedVideo() {
           0
         );
 
-        // Texto e dispositivos saem de cena conforme a seção avança.
-        tl.to(
-          [intro.current, devices.current],
-          { autoAlpha: 0, y: -30, ease: "none" },
-          0
-        );
+        // Os dispositivos saem de cena conforme a seção avança.
+        tl.to(devices.current, { autoAlpha: 0, y: -30, ease: "none" }, 0);
       }
     );
 
@@ -89,7 +84,7 @@ export default function FramedVideo() {
     <section
       ref={section}
       className="relative h-[250vh] bg-bg"
-      aria-label="A melhor internet é aquela que você esquece que está usando"
+      aria-label="Conexão para tudo o que você faz"
     >
       <div className="fv-stage sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden bg-[#08080a]">
         {/* Fundo da seção: entra no lugar do preenchimento preto chapado.
@@ -113,12 +108,10 @@ export default function FramedVideo() {
           }}
         />
 
-        {/* Dispositivos 3D, na disposição da peça de referência: controle à
-            esquerda, notebook à direita. Ficam na faixa superior porque as
-            duas colunas de texto são centradas na vertical — no desktop elas
-            ocupam a altura do meio, e no mobile o intro e as frases tomam de
-            40% para baixo, então a faixa de cima é o espaço que sobra.
-            z-[15]: acima do véu e do Lightfall, abaixo do texto. */}
+        {/* Dispositivos 3D, na mesma disposição da peça de referência:
+            controle e TV à esquerda, notebook e fone à direita. Os de baixo
+            repetem left/right dos de cima para as duas colunas ficarem
+            alinhadas. z-[15] os põe acima do véu e do Lightfall. */}
         <div ref={devices} aria-hidden className="pointer-events-none absolute inset-0 z-[15]">
           <Image
             src="/icons/controle-3d.png"
@@ -134,25 +127,20 @@ export default function FramedVideo() {
             height={528}
             className="absolute right-[4%] top-[9%] w-[38%] max-w-[320px] rotate-3 lg:right-[9%] lg:top-[10%] lg:w-[18%]"
           />
-        </div>
-
-        {/* Título introdutório. O deslocamento e o painel "liquid glass" ficam
-            no filho porque o GSAP controla o transform do elemento com ref. */}
-        <div
-          ref={intro}
-          className="pointer-events-none absolute z-20 w-full max-w-2xl px-5 lg:left-[2.5%] lg:top-1/2 lg:w-[20%] lg:max-w-none lg:-translate-y-1/2 lg:px-0 xl:left-[4%] xl:w-[22%]"
-        >
-          {/* Sem painel: o texto assenta direto sobre o Lightfall, em branco.
-              O deslocamento -105% segue exclusivo do mobile. */}
-          <div className="-translate-y-[105%] px-5 py-6 text-center text-white lg:translate-y-0 lg:px-6 lg:py-7">
-            <p className="text-eyebrow mb-3 text-orange lg:mb-4">
-              Conecte. Relaxe. A ARP cuida do resto.
-            </p>
-            <h2 className="fv-title text-section font-bold">
-              A melhor internet é aquela que você{" "}
-              <span className="text-orange-glow">esquece</span> que está usando.
-            </h2>
-          </div>
+          <Image
+            src="/icons/tv-3d.png"
+            alt=""
+            width={620}
+            height={496}
+            className="absolute bottom-[9%] left-[4%] w-[36%] max-w-[300px] rotate-3 lg:bottom-[10%] lg:left-[9%] lg:w-[17%]"
+          />
+          <Image
+            src="/icons/fone-3d.png"
+            alt=""
+            width={620}
+            height={496}
+            className="absolute bottom-[7%] right-[4%] w-[38%] max-w-[320px] -rotate-6 lg:bottom-[8%] lg:right-[9%] lg:w-[18%]"
+          />
         </div>
 
       </div>
