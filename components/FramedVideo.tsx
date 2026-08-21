@@ -39,12 +39,14 @@ export default function FramedVideo() {
         isMobile: "(max-width: 1023px)",
       },
       () => {
+        const stageEl = sec.querySelector<HTMLElement>(".fv-stage")!;
+
         /* Flutuação contínua dos dispositivos. Amplitude, duração e atraso
            diferentes por item de propósito: em sincronia os dois subiriam e
            desceriam juntos, o que denuncia o laço na hora. yPercent em vez de
            y para a amplitude acompanhar o tamanho do ícone em cada tela. */
         gsap.utils
-          .toArray<HTMLElement>(devices.current!.children)
+          .toArray<HTMLElement>(devices.current!.querySelectorAll("img"))
           .forEach((el, i) => {
             gsap.to(el, {
               yPercent: -6 - (i % 3) * 1.5,
@@ -64,19 +66,43 @@ export default function FramedVideo() {
             end: "bottom bottom",
             scrub: 0.8,
             pin: ".fv-stage",
+            // O curso do parallax é lido por função: precisa ser remedido
+            // quando o ScrollTrigger recalcula a página.
+            invalidateOnRefresh: true,
           },
         });
 
-        tl.to(
-          topFade.current,
-          { autoAlpha: 0, duration: 0.3, ease: "none" },
-          0
-        );
+        tl.to(topFade.current, { autoAlpha: 0, duration: 0.22, ease: "none" }, 0);
 
-        // Os dispositivos saem de cena conforme a seção avança.
-        tl.to(devices.current, { autoAlpha: 0, y: -30, ease: "none" }, 0);
-        // A Terra só esmaece: deslizar para cima quebraria a leitura de chão.
-        tl.to(earth.current, { autoAlpha: 0, ease: "none" }, 0);
+        /* Parallax: cada camada sobe num ritmo próprio conforme a seção rola.
+           O valor de data-parallax é % da ALTURA DO PALCO, lido por função
+           para acompanhar telas diferentes — em yPercent o curso dependeria do
+           tamanho de cada peça, e um ícone pequeno mal sairia do lugar.
+           O globo leva o maior curso: é ele que sobe. */
+        gsap.utils
+          .toArray<HTMLElement>(sec.querySelectorAll("[data-parallax]"))
+          .forEach((el) => {
+            const pct = Number(el.dataset.parallax);
+            tl.to(
+              el,
+              {
+                y: () => -(stageEl.clientHeight * pct) / 100,
+                // duration 1 = o curso inteiro da seção. Na duração padrão
+                // (0.5) a subida terminava em ~41% da rolagem e as camadas
+                // ficavam paradas no resto.
+                duration: 1,
+                ease: "none",
+              },
+              0
+            );
+          });
+
+        // Esmaecem só no trecho final, com o parallax já percorrido.
+        tl.to(
+          [devices.current, earth.current],
+          { autoAlpha: 0, duration: 0.18, ease: "none" },
+          0.82
+        );
       }
     );
 
@@ -117,6 +143,7 @@ export default function FramedVideo() {
             já tem o topo transparente, então dissolve sozinha no fundo. */}
         <div
           ref={earth}
+          data-parallax="48"
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 z-[12]"
         >
@@ -133,37 +160,70 @@ export default function FramedVideo() {
             controle e TV à esquerda, notebook e fone à direita. Os de baixo
             repetem left/right dos de cima para as duas colunas ficarem
             alinhadas. z-[15] os põe acima do véu e do Lightfall. */}
-        <div ref={devices} aria-hidden className="pointer-events-none absolute inset-0 z-[15]">
-          <Image
-            src="/icons/controle-3d.png"
-            alt=""
-            width={620}
-            height={413}
-            className="absolute left-[4%] top-[7%] w-[36%] max-w-[300px] -rotate-6 lg:left-[9%] lg:top-[8%] lg:w-[17%]"
-          />
-          <Image
-            src="/icons/notebook-3d.png"
-            alt=""
-            width={620}
-            height={528}
-            className="absolute right-[4%] top-[9%] w-[38%] max-w-[320px] rotate-3 lg:right-[9%] lg:top-[10%] lg:w-[18%]"
-          />
-          <Image
-            src="/icons/tv-3d.png"
-            alt=""
-            width={620}
-            height={496}
-            className="absolute bottom-[9%] left-[4%] w-[36%] max-w-[300px] rotate-3 lg:bottom-[10%] lg:left-[9%] lg:w-[17%]"
-          />
-          <Image
-            src="/icons/fone-3d.png"
-            alt=""
-            width={620}
-            height={496}
-            className="absolute bottom-[7%] right-[4%] w-[38%] max-w-[320px] -rotate-6 lg:bottom-[8%] lg:right-[9%] lg:w-[18%]"
-          />
-        </div>
+        {/* Aparelhos e mascote. Cada peca tem DOIS elementos de proposito:
+           o wrapper recebe o parallax da rolagem e a imagem recebe a
+           flutuacao continua. Sao duas animacoes no mesmo eixo — no mesmo
+           elemento uma sobrescreveria a outra.
 
+           data-parallax = quanto a camada sobe, em % da altura do palco. Os
+           valores crescem do fundo para a frente (Terra 5, aparelhos 18-34,
+           mascote 42): e essa diferenca que cria a profundidade. */}
+        <div ref={devices} aria-hidden className="pointer-events-none absolute inset-0 z-[15]">
+          <div data-parallax="14" className="absolute left-[4%] top-[7%] w-[36%] max-w-[300px] lg:left-[9%] lg:top-[8%] lg:w-[17%]">
+            <Image
+              src="/icons/controle-3d.png"
+              alt=""
+              width={620}
+              height={413}
+              className="w-full -rotate-6"
+            />
+          </div>
+          <div data-parallax="18" className="absolute right-[4%] top-[9%] w-[38%] max-w-[320px] lg:right-[9%] lg:top-[10%] lg:w-[18%]">
+            <Image
+              src="/icons/notebook-3d.png"
+              alt=""
+              width={620}
+              height={528}
+              className="w-full rotate-3"
+            />
+          </div>
+          <div data-parallax="30" className="absolute bottom-[9%] left-[4%] w-[36%] max-w-[300px] lg:bottom-[10%] lg:left-[9%] lg:w-[17%]">
+            <Image
+              src="/icons/tv-3d.png"
+              alt=""
+              width={620}
+              height={496}
+              className="w-full rotate-3"
+            />
+          </div>
+          <div data-parallax="34" className="absolute bottom-[7%] right-[4%] w-[38%] max-w-[320px] lg:bottom-[8%] lg:right-[9%] lg:w-[18%]">
+            <Image
+              src="/icons/fone-3d.png"
+              alt=""
+              width={620}
+              height={496}
+              className="w-full -rotate-6"
+            />
+          </div>
+
+          {/* Mascote no pico do horizonte. bottom-[26vw] nao e chute: a altura
+              do globo e sempre largura/3 e o pico do arco esta a 21,9% do topo
+              dessa imagem — 0,781 x largura/3 = 26% da largura acima da base.
+              Como so depende da largura, o mesmo valor acerta em qualquer tela.
+
+              59% e o teto no desktop: com os pes a 363px da base sobram 547px
+              de altura, que em 3:2 dao 820px de largura. Acima disso a cabeca
+              sai da secao. */}
+          <div data-parallax="48" className="absolute inset-x-0 bottom-[26vw] mx-auto w-[92%] max-w-[420px] lg:w-[59%] lg:max-w-[820px]">
+            <Image
+              src="/astronauta.webp"
+              alt=""
+              width={760}
+              height={506}
+              className="w-full "
+            />
+          </div>
+        </div>
       </div>
     </section>
   );
