@@ -120,10 +120,23 @@ export default function Hero() {
             Desktop (lg+): título e subtítulo lado a lado no topo; microbenefícios
             e CTAs numa segunda "linha" ancorada embaixo, perto dos pés do personagem. */}
         <div className="flex flex-1 flex-col lg:flex-row lg:flex-wrap lg:items-center lg:gap-x-10 lg:gap-y-8">
-          {/* HEAD — o título entra da esquerda */}
-          <div className="mx-auto max-w-sm pt-2 text-center lg:mx-0 lg:max-w-lg lg:-translate-x-[85%]">
+          {/* HEAD — o título entra da esquerda.
+
+              Mesmo defeito que havia no subtítulo, espelhado: -85% era um
+              recuo FIXO (435px), então a 1680px o título perdia 158px de
+              texto para fora da tela — sumia o "Sua v" de "Sua vida". A conta
+              abaixo prende a caixa a 115px da borda da janela em qualquer
+              largura (671 = 576 da metade do container - 20 do px-5 + 115 do
+              recuo), e o max(0px, ...) a solta quando a tela é estreita
+              demais para esse recuo existir. */}
+          <div className="mx-auto max-w-sm pt-2 text-center lg:mx-0 lg:max-w-lg lg:-translate-x-[max(0px,calc(50vw-671px))]">
             <ScrollReveal direction="left" delay={0}>
-              <h1 className="text-hero-compact -translate-y-[50%] font-bold lg:translate-y-0">
+              {/* O 6vh no desktop é o MESMO do subtítulo: a linha é
+                  lg:items-center, então sem isso os dois ficariam centrados
+                  juntos e só o subtítulo desceria, deixando 51px de
+                  desalinhamento entre os eixos. Os dois valores andam
+                  juntos — mudar um sem o outro quebra a simetria. */}
+              <h1 className="text-hero-compact -translate-y-[50%] font-bold lg:translate-y-[6vh]">
                 <span className="text-glow">Sua vida acontece rápido.</span>{" "}
                 <span className="text-text-dim">Sua internet também deveria.</span>
               </h1>
@@ -133,14 +146,29 @@ export default function Hero() {
           {/* SUBHEAD — elemento do lado direito, entra da direita.
               No mobile, mt-auto empurra ela (e tudo que vem depois, já que
               seguem logo abaixo no fluxo) para perto da base; no desktop
-              fica ao lado do título. */}
+              fica ao lado do título.
+
+              lg:ml-auto joga o bloco para a ponta direita do container; o
+              translate abaixo é só o quanto ele avança para FORA dele. */}
           <ScrollReveal
             direction="right"
             delay={300}
             duration={800}
-            className="mx-auto mt-auto max-w-[24rem] lg:mx-0 lg:mt-0"
+            className="mx-auto mt-auto max-w-[24rem] lg:mx-0 lg:ml-auto lg:mt-0 lg:max-w-[26rem]"
           >
-            <p className="text-center text-base leading-relaxed text-text-dim lg:translate-x-[109%] lg:text-xl">
+            {/* O deslocamento é medido a partir da BORDA DA JANELA, não da
+                largura do próprio parágrafo. Com translate-x-[109%] o avanço
+                era fixo (418px) em qualquer tela: sobrava espaço num monitor
+                largo e, a 1396px, jogava 93px do texto para fora da tela.
+                Aqui 50vw - 36rem é a folga entre o container (max-w-6xl) e a
+                borda; o -10rem reserva a margem que o texto nunca invade, e o
+                max(0px, ...) impede que a conta fique negativa e puxe o
+                bloco para a esquerda em telas estreitas.
+
+                O translate mora no <p>, e não no wrapper, de propósito: o
+                ScrollReveal anima o transform do wrapper e uma coisa
+                sobrescreveria a outra. */}
+            <p className="text-center text-base leading-relaxed text-text-dim lg:translate-x-[max(0px,calc(50vw-36rem-10rem))] lg:translate-y-[6vh] lg:text-[1.375rem]">
               Trabalhe, estude, jogue, assista e conecte todos os seus
               dispositivos com uma internet preparada para acompanhar o seu ritmo.
             </p>
