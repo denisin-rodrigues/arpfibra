@@ -28,19 +28,8 @@ export default function FramedVideo() {
   const intro = useRef<HTMLDivElement>(null);
   const frame = useRef<HTMLDivElement>(null);
   const frameInner = useRef<HTMLDivElement>(null);
+  const topFade = useRef<HTMLDivElement>(null);
   const video = useRef<HTMLVideoElement>(null);
-
-  /* O `media` das <source> só é avaliado no carregamento. Ao cruzar o
-     breakpoint (girar o tablet, redimensionar), recarregamos para trocar
-     entre a versão horizontal e a vertical. */
-  useEffect(() => {
-    const el = video.current;
-    if (!el) return;
-    const mq = window.matchMedia("(min-width: 1024px)");
-    const swap = () => el.load();
-    mq.addEventListener("change", swap);
-    return () => mq.removeEventListener("change", swap);
-  }, []);
 
   useEffect(() => {
     const sec = section.current;
@@ -75,12 +64,18 @@ export default function FramedVideo() {
            mais larga que 16:9 quem manda é a largura; numa mais alta, a altura.
            É o mesmo cálculo do `object-fit: cover`, feito à mão porque aqui
            quem cresce é a caixa, não o conteúdo dentro dela. */
-        const ratio = isDesktop ? 16 / 9 : 9 / 16;
-        const coverWidth = () =>
-          Math.max(stageEl.clientWidth, stageEl.clientHeight * ratio);
-        // No mobile o card e proporcional a tela; 550px nao caberia em 375.
+        /* Largura do quadro na escala 1. O vídeo é 9:16 nos dois breakpoints.
+           Desktop: painel de altura cheia, largura derivada da proporção.
+           Mobile: a largura que COBRE a tela — o mesmo cálculo do object-fit
+           cover, feito à mão porque aqui quem cresce é a caixa. */
+        const panelRatio = 9 / 16;
+        const frameWidth = () =>
+          isDesktop
+            ? stageEl.clientHeight * panelRatio
+            : Math.max(stageEl.clientWidth, stageEl.clientHeight * panelRatio);
+        // Tamanho do card no início: fração do quadro final.
         const cardWidth = () =>
-          isDesktop ? 550 : stageEl.clientWidth * 0.62;
+          isDesktop ? frameWidth() * 0.55 : stageEl.clientWidth * 0.62;
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -89,7 +84,7 @@ export default function FramedVideo() {
             end: "bottom bottom",
             scrub: 0.8,
             pin: ".fv-stage",
-            // coverWidth() é lido por função: precisa ser recalculado quando
+            // frameWidth() é lido por função: precisa ser recalculado quando
             // o ScrollTrigger remede a página (resize, fontes carregando).
             invalidateOnRefresh: true,
           },
@@ -102,8 +97,13 @@ export default function FramedVideo() {
            por clip-path que cortava as laterais no mobile. */
         tl.fromTo(
           frameInner.current,
-          { scale: () => cardWidth() / coverWidth() },
+          { scale: () => cardWidth() / frameWidth() },
           { scale: 1, ease: "power2.inOut" },
+          0
+        );
+        tl.to(
+          topFade.current,
+          { autoAlpha: 0, duration: 0.3, ease: "none" },
           0
         );
 
@@ -147,10 +147,24 @@ export default function FramedVideo() {
           <Lightfall {...LIGHTFALL_SECTION2} />
         </div>
 
-        {/* Vídeo como fundo da seção. Duas versões: horizontal (16:9) no
-            desktop e vertical (9:16) no mobile. O atributo `media` faz o
-            navegador baixar APENAS a fonte correspondente — o vídeo do
-            desktop nunca é carregado no celular, e vice-versa. */}
+        {/* Véu de transição com a section 1. O Lightfall é claro e quente no
+            topo, e a Hero termina em #08080a — sem isto a divisa vira uma
+            linha dura. Some conforme a seção entra, então não deixa sombra
+            permanente no topo da tela durante o pin. */}
+        <div
+          ref={topFade}
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 z-[5] h-[26%]"
+          style={{
+            background:
+              "linear-gradient(180deg, #08080a 0%, rgba(8,8,10,0.72) 38%, rgba(8,8,10,0) 100%)",
+          }}
+        />
+
+        {/* Vídeo da seção, agora um só nos dois breakpoints: a peça é
+            retrato (1080x1920) e a composição é vertical — arcos de Wi-Fi
+            sobre o globo —, então recortá-la para 16:9 no desktop custaria
+            metade do desenho. */}
         <div
           ref={frame}
           /* Ocupa o palco inteiro nos dois breakpoints. No desktop ele deixou
@@ -158,17 +172,19 @@ export default function FramedVideo() {
              de palco preto nas laterais em telas mais largas que 16:9. */
           className="fv-video-mask absolute inset-0 z-10 flex items-center justify-center overflow-hidden"
         >
-          {/* Esta é a caixa que cresce. Ela tem a proporção do vídeo do
-              breakpoint — 9:16 no mobile, 16:9 no desktop — e é por isso que o
-              quadro nunca aparece cortado: o `object-cover` do vídeo não tem o
-              que recortar quando caixa e conteúdo têm a mesma proporção.
-              A largura `max(100%, 56.25svh)` / `max(100%, 177.8svh)` é o mesmo
-              max(largura, altura × proporção) calculado no JS, para a caixa
-              cobrir o palco quando a escala chega a 1. Arredondamento e
-              overflow ficam aqui — dispensam o clip-path. */}
+          {/* A caixa que cresce, sempre 9:16 como o vídeo — é isso que impede
+              qualquer corte, já que o `object-cover` não tem o que recortar
+              quando caixa e conteúdo têm a mesma proporção.
+
+              Mobile: `max(100%, 56.25svh)` = max(largura, altura × 9/16), a
+              largura que faz a caixa COBRIR a tela na escala 1.
+              Desktop: altura cheia e largura derivada, virando um painel
+              vertical central com o Lightfall aparecendo dos dois lados.
+              Cobrir ali exigiria uma caixa de ~2455px de altura, mostrando
+              só uma fatia fina do vídeo. */}
           <div
             ref={frameInner}
-            className="relative aspect-[9/16] h-auto w-[max(100%,56.25svh)] shrink-0 overflow-hidden rounded-[2rem] lg:aspect-video lg:w-[max(100%,177.8svh)]"
+            className="relative aspect-[9/16] h-auto w-[max(100%,56.25svh)] shrink-0 overflow-hidden rounded-[2rem] lg:h-full lg:w-auto"
           >
             <video
               ref={video}
@@ -180,7 +196,6 @@ export default function FramedVideo() {
               preload="none"
               aria-hidden="true"
             >
-              <source src="/video-section2.mp4" media="(min-width: 1024px)" type="video/mp4" />
               <source src="/segundovideo.mp4" type="video/mp4" />
             </video>
             <div
