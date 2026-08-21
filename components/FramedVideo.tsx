@@ -75,9 +75,12 @@ export default function FramedVideo() {
            mais larga que 16:9 quem manda é a largura; numa mais alta, a altura.
            É o mesmo cálculo do `object-fit: cover`, feito à mão porque aqui
            quem cresce é a caixa, não o conteúdo dentro dela. */
+        const ratio = isDesktop ? 16 / 9 : 9 / 16;
         const coverWidth = () =>
-          Math.max(stageEl.clientWidth, (stageEl.clientHeight * 16) / 9);
-        const CARD_WIDTH = 550;
+          Math.max(stageEl.clientWidth, stageEl.clientHeight * ratio);
+        // No mobile o card e proporcional a tela; 550px nao caberia em 375.
+        const cardWidth = () =>
+          isDesktop ? 550 : stageEl.clientWidth * 0.62;
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -92,27 +95,17 @@ export default function FramedVideo() {
           },
         });
 
-        if (isDesktop) {
-          /* O quadro é uma caixa 16:9 já dimensionada para cobrir o palco;
-             escalá-la até 1 faz o vídeo sangrar a tela inteira, sem sobrar
-             faixa de palco nas laterais. Como a caixa é 16:9 e o vídeo também,
-             o quadro aparece inteiro em qualquer ponto da escala. */
-          tl.fromTo(
-            frameInner.current,
-            { scale: () => CARD_WIDTH / coverWidth() },
-            { scale: 1, ease: "power2.inOut" },
-            0
-          );
-        } else {
-          // Mobile: o vídeo é vertical e já preenche a tela, então basta abrir
-          // a janela do recorte.
-          tl.fromTo(
-            frame.current,
-            { clipPath: "inset(26% 19% 26% 19% round 28px)" },
-            { clipPath: "inset(0% 0% 0% 0% round 0px)", ease: "power2.inOut" },
-            0
-          );
-        }
+        /* A caixa tem a proporção do vídeo do breakpoint e já vem dimensionada
+           para cobrir o palco; escalá-la até 1 faz o vídeo sangrar a tela sem
+           sobrar faixa de palco. Como caixa e vídeo têm a mesma proporção, o
+           quadro aparece INTEIRO em qualquer ponto da escala — era o recorte
+           por clip-path que cortava as laterais no mobile. */
+        tl.fromTo(
+          frameInner.current,
+          { scale: () => cardWidth() / coverWidth() },
+          { scale: 1, ease: "power2.inOut" },
+          0
+        );
 
         if (isDesktop) {
           /* Os dois cards ladeiam o frame do vídeo e nascem visíveis juntos.
@@ -158,25 +151,24 @@ export default function FramedVideo() {
             desktop e vertical (9:16) no mobile. O atributo `media` faz o
             navegador baixar APENAS a fonte correspondente — o vídeo do
             desktop nunca é carregado no celular, e vice-versa. */}
-        {/* O wrapper tem o tamanho exato do vídeo no desktop: assim a máscara
-            esfuma as bordas reais dele e o véu escuro (que dá contraste ao
-            texto) fica restrito ao vídeo, sem invadir as faixas brancas. */}
         <div
           ref={frame}
           /* Ocupa o palco inteiro nos dois breakpoints. No desktop ele deixou
              de ter o tamanho exato do vídeo: era isso que fazia sobrar faixa
              de palco preto nas laterais em telas mais largas que 16:9. */
-          className="fv-video-mask absolute inset-0 z-10 overflow-hidden lg:flex lg:items-center lg:justify-center"
+          className="fv-video-mask absolute inset-0 z-10 flex items-center justify-center overflow-hidden"
         >
-          {/* No desktop esta é a caixa que cresce: 16:9 como o vídeo (então o
-              quadro nunca é cortado) e larga o bastante para cobrir o palco
-              quando a escala chega a 1. `max(100%, 177.8svh)` é o mesmo
-              max(largura, altura × 16/9) usado no JS. O arredondamento e o
-              overflow ficam aqui — dispensam o clip-path no desktop.
-              No mobile segue sendo só o wrapper do vídeo vertical. */}
+          {/* Esta é a caixa que cresce. Ela tem a proporção do vídeo do
+              breakpoint — 9:16 no mobile, 16:9 no desktop — e é por isso que o
+              quadro nunca aparece cortado: o `object-cover` do vídeo não tem o
+              que recortar quando caixa e conteúdo têm a mesma proporção.
+              A largura `max(100%, 56.25svh)` / `max(100%, 177.8svh)` é o mesmo
+              max(largura, altura × proporção) calculado no JS, para a caixa
+              cobrir o palco quando a escala chega a 1. Arredondamento e
+              overflow ficam aqui — dispensam o clip-path. */}
           <div
             ref={frameInner}
-            className="relative h-full w-full lg:aspect-video lg:h-auto lg:w-[max(100%,177.8svh)] lg:overflow-hidden lg:rounded-[2rem]"
+            className="relative aspect-[9/16] h-auto w-[max(100%,56.25svh)] shrink-0 overflow-hidden rounded-[2rem] lg:aspect-video lg:w-[max(100%,177.8svh)]"
           >
             <video
               ref={video}
