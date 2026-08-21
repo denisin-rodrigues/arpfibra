@@ -7,6 +7,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { LIGHTFALL_SECTION2 } from "@/lib/lightfall-preset";
 import { prefersReducedMotion } from "@/lib/motion";
+import Globe from "./Globe";
 
 /* Carregado sob demanda: precisa de WebGL, então não pode rodar no servidor,
    e manter o ogl fora do bundle inicial adianta a primeira renderização. */
@@ -137,29 +138,20 @@ export default function FramedVideo() {
           }}
         />
 
-        {/* Horizonte da Terra ancorado na base da seção. z-[12] o deixa acima
-            do Lightfall e do véu, mas ABAIXO dos dispositivos (z-[15]) — assim
-            eles flutuam sobre o planeta em vez de sumirem atrás dele. A peça
-            já tem o topo transparente, então dissolve sozinha no fundo. */}
+        {/* Globo. Segue com data-parallax="48" — continua sendo a camada que
+            sobe mais, que era o ponto do efeito. Diametro em vh para o
+            enquadramento nao depender da largura da tela, e ancorado embaixo
+            para o mascote poder pousar sobre ele. z-[12]: acima do Lightfall
+            e do veu, abaixo dos aparelhos. */}
         <div
           ref={earth}
           data-parallax="48"
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[12]"
+          className="pointer-events-none absolute inset-x-0 bottom-[6%] z-[12] flex justify-center"
         >
-          <Image
-            src="/terra.webp"
-            alt=""
-            width={1920}
-            height={640}
-            className="w-full"
-          />
+          <Globe className="h-[46vh] w-[46vh] shrink-0" />
         </div>
 
-        {/* Dispositivos 3D, na mesma disposição da peça de referência:
-            controle e TV à esquerda, notebook e fone à direita. Os de baixo
-            repetem left/right dos de cima para as duas colunas ficarem
-            alinhadas. z-[15] os põe acima do véu e do Lightfall. */}
         {/* Aparelhos e mascote. Cada peca tem DOIS elementos de proposito:
            o wrapper recebe o parallax da rolagem e a imagem recebe a
            flutuacao continua. Sao duas animacoes no mesmo eixo — no mesmo
@@ -206,15 +198,13 @@ export default function FramedVideo() {
             />
           </div>
 
-          {/* Mascote no pico do horizonte. bottom-[26vw] nao e chute: a altura
-              do globo e sempre largura/3 e o pico do arco esta a 21,9% do topo
-              dessa imagem — 0,781 x largura/3 = 26% da largura acima da base.
-              Como so depende da largura, o mesmo valor acerta em qualquer tela.
-
-              59% e o teto no desktop: com os pes a 363px da base sobram 547px
-              de altura, que em 3:2 dao 820px de largura. Acima disso a cabeca
-              sai da secao. */}
-          <div data-parallax="48" className="absolute inset-x-0 bottom-[26vw] mx-auto w-[92%] max-w-[420px] lg:w-[59%] lg:max-w-[820px]">
+          {/* Mascote pousado sobre o globo. bottom-[50vh] vem da geometria da
+              esfera: 46vh de diametro a 6% da base coloca o topo dela por
+              volta de 52vh, entao os pes entram uns poucos px na curvatura —
+              e o que faz parecer pouso, e nao flutuacao solta. Esfera e
+              mascote usam a mesma unidade (vh), entao a relacao se mantem em
+              qualquer tela. */}
+          <div data-parallax="48" className="absolute inset-x-0 bottom-[50vh] mx-auto w-[60%] max-w-[300px] lg:w-[34%] lg:max-w-[470px]">
             <Image
               src="/astronauta.webp"
               alt=""
