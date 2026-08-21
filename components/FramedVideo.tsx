@@ -15,11 +15,21 @@ const Lightfall = dynamic(() => import("./Lightfall"), { ssr: false });
 
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
+/* Uma frase para cada aparelho que aparece na cena: controle, TV, notebook
+   e fone. Trocam a cada 3s exatos (0,7 entra + 1,6 segura + 0,7 sai). */
+const frases = [
+  "Melhor conexão para games",
+  "Streaming sem travar",
+  "Home office sem quedas",
+  "Música o dia inteiro",
+];
+
 export default function FramedVideo() {
   const section = useRef<HTMLDivElement>(null);
   const topFade = useRef<HTMLDivElement>(null);
   const devices = useRef<HTMLDivElement>(null);
   const earth = useRef<HTMLDivElement>(null);
+  const bgText = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sec = section.current;
@@ -59,6 +69,24 @@ export default function FramedVideo() {
               delay: i * 0.45,
             });
           });
+
+        /* Rodízio das frases. Cada uma leva 3s exatos: 0,7 entrando, 1,6
+           parada, 0,7 saindo. Timeline própria com repeat -1 — é um laço de
+           tempo, independente da rolagem, ao contrário do resto da seção. */
+        const frasesEls = gsap.utils.toArray<HTMLElement>(
+          bgText.current!.children
+        );
+        gsap.set(frasesEls, { autoAlpha: 0, yPercent: 40 });
+        const rodizio = gsap.timeline({ repeat: -1 });
+        frasesEls.forEach((el) => {
+          rodizio
+            .to(el, { autoAlpha: 1, yPercent: 0, duration: 0.7, ease: "power3.out" })
+            .to(
+              el,
+              { autoAlpha: 0, yPercent: -40, duration: 0.7, ease: "power3.in" },
+              "+=1.6"
+            );
+        });
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -100,7 +128,7 @@ export default function FramedVideo() {
 
         // Esmaecem só no trecho final, com o parallax já percorrido.
         tl.to(
-          [devices.current, earth.current],
+          [devices.current, earth.current, bgText.current],
           { autoAlpha: 0, duration: 0.18, ease: "none" },
           0.82
         );
@@ -137,6 +165,27 @@ export default function FramedVideo() {
               "linear-gradient(180deg, #08080a 0%, rgba(8,8,10,0.72) 38%, rgba(8,8,10,0) 100%)",
           }}
         />
+
+        {/* Texto de fundo. z-[8] o deixa acima do Lightfall e do véu, mas
+            atrás do globo (12) e dos aparelhos (15) — é pano de fundo, não
+            conteúdo. As frases ficam empilhadas no mesmo ponto e só uma
+            aparece por vez. data-parallax baixo: deriva devagar, o que
+            reforça a sensação de estar lá no fundo. */}
+        <div
+          ref={bgText}
+          data-parallax="8"
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-[8] grid place-items-center px-6"
+        >
+          {frases.map((f) => (
+            <span
+              key={f}
+              className="col-start-1 row-start-1 text-center font-display text-[clamp(1.8rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-tight text-white/[0.07]"
+            >
+              {f}
+            </span>
+          ))}
+        </div>
 
         {/* Globo. Segue com data-parallax="48" — continua sendo a camada que
             sobe mais, que era o ponto do efeito. Diametro em vh para o
