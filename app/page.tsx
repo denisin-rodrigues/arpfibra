@@ -9,6 +9,7 @@ import Central from "@/components/Central";
 import Support from "@/components/Support";
 import Faq from "@/components/Faq";
 import SocialProof from "@/components/SocialProof";
+import InstagramCta from "@/components/InstagramCta";
 import FinalCta from "@/components/FinalCta";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
@@ -30,6 +31,12 @@ export default function Home() {
         <Central />
         <Support />
         <Faq />
+        {/* Antes do SocialProof de propósito: o FinalCta desliza por cima da
+            seção imediatamente anterior, e essa seção é curta demais para
+            sobreviver a isso — o botão, que fica na base, seria encoberto
+            quase o tempo todo. Assim o FinalCta volta a cobrir o SocialProof,
+            como antes. */}
+        <InstagramCta />
         <SocialProof />
         <FinalCta />
       </main>

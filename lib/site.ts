@@ -4,6 +4,7 @@ export const site = {
   phoneCell: "(62) 99900-7153",
   whatsapp: "https://wa.me/5562999007153",
   central: "https://central.arpfibra.com.br",
+  instagram: "https://instagram.com/arpfibra",
   address: {
     street: "Rua 21 de Abril — Centro",
     city: "Mambaí — GO",
