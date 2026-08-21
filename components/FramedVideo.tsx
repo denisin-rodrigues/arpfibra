@@ -166,27 +166,45 @@ export default function FramedVideo() {
           }}
         />
 
-        {/* Texto de fundo. z-[8] o deixa acima do Lightfall e do véu, mas
-            atrás do globo (12) e dos aparelhos (15) — é pano de fundo, não
-            conteúdo. As frases ficam empilhadas no mesmo ponto e só uma
+        {/* Texto de fundo. No desktop segue em z-[8]: acima do Lightfall e
+            do véu, atrás do globo (12) e dos aparelhos (15) — é pano de
+            fundo, não conteúdo, e some por trás do planeta de propósito.
+
+            No mobile vai para z-[13], à FRENTE do globo. Lá a frase desceu
+            para baixo dos pés do astronauta, e nessa altura ela cai dentro do
+            disco do planeta: em z-[8] o globo simplesmente a cobria, e só
+            sobravam as pontas que passavam fora do círculo. Não era falta de
+            contraste, era ordem de empilhamento. Continua atrás dos
+            aparelhos (15). As frases ficam empilhadas no mesmo ponto e só uma
             aparece por vez. data-parallax baixo: deriva devagar, o que
             reforça a sensação de estar lá no fundo.
 
-            O pb sobe o texto encurtando a área de centralização, em vez de um
-            translate: o GSAP já anima `y` neste elemento e nos spans, e um
-            translate do Tailwind entraria em conflito. A unidade é vh, e não
-            %, porque padding percentual resolve contra a LARGURA do bloco —
-            em % o deslocamento mudava conforme a proporção da tela. */}
+            O padding desloca o texto encurtando a área de centralização, em
+            vez de um translate: o GSAP já anima `y` neste elemento e nos
+            spans, e um translate do Tailwind entraria em conflito. A unidade
+            é vh, e não %, porque padding percentual resolve contra a LARGURA
+            do bloco — em % o deslocamento mudava conforme a proporção da tela.
+
+            Mobile e desktop puxam para lados OPOSTOS, daí pt num e pb no
+            outro: com place-items-center o centro fica em (100vh - pb)/2 ou
+            (100vh + pt)/2, então só o padding-top consegue empurrar abaixo da
+            metade — nenhum pb, por maior que fosse, desceria o texto.
+
+            No mobile o astronauta cobria 100% da frase na entrada da seção
+            (ele ocupa y 244-401 num palco de 812px, e o texto ficava em
+            302-332). Os 12vh põem a frase em ~425-485, abaixo dos pés dele.
+            Isso a joga sobre o globo, que é claro — por isso o halo escuro no
+            span abaixo, senão trocaria "escondida" por "ilegível". */}
         <div
           ref={bgText}
           data-parallax="8"
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-[8] grid place-items-center px-6 pb-[22vh]"
+          className="pointer-events-none absolute inset-0 z-[13] grid place-items-center px-6 pt-[12vh] lg:z-[8] lg:pt-0 lg:pb-[22vh]"
         >
           {frases.map((f) => (
             <span
               key={f}
-              className="col-start-1 row-start-1 text-center font-display text-[clamp(1.8rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-tight text-white/[0.45]"
+              className="col-start-1 row-start-1 text-center font-display text-[clamp(1.8rem,7vw,5.5rem)] font-bold leading-[1.05] tracking-tight text-white/[0.72] [text-shadow:0_0_28px_rgba(0,0,0,0.9),0_2px_8px_rgba(0,0,0,0.85)] lg:text-white/[0.45]"
             >
               {f}
             </span>
