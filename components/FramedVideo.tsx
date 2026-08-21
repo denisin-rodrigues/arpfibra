@@ -215,10 +215,9 @@ export default function FramedVideo() {
           ref={intro}
           className="pointer-events-none absolute z-20 w-full max-w-2xl px-5 lg:left-[2.5%] lg:top-1/2 lg:w-[20%] lg:max-w-none lg:-translate-y-1/2 lg:px-0 xl:left-[4%] xl:w-[22%]"
         >
-          {/* O painel liquid glass vale nos dois breakpoints: com o palco
-              escuro (Lightfall), o título ficaria quase da mesma cor do fundo
-              sem ele. O deslocamento -105% segue exclusivo do mobile. */}
-          <div className="-translate-y-[105%] rounded-[2rem] border border-white/60 bg-white/90 px-5 py-6 text-center shadow-[0_20px_60px_-24px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:translate-y-0 lg:px-6 lg:py-7">
+          {/* Sem painel: o texto assenta direto sobre o Lightfall, em branco.
+              O deslocamento -105% segue exclusivo do mobile. */}
+          <div className="-translate-y-[105%] px-5 py-6 text-center text-white lg:translate-y-0 lg:px-6 lg:py-7">
             <p className="text-eyebrow mb-3 text-orange lg:mb-4">
               Conecte. Relaxe. A ARP cuida do resto.
             </p>
