@@ -1,4 +1,5 @@
 import Image from "next/image";
+import HeroVideo from "./HeroVideo";
 import { Icon } from "@iconify/react";
 import { site } from "@/lib/site";
 import ScrollReveal from "./ScrollReveal";
@@ -25,20 +26,10 @@ export default function Hero() {
       />
 
       {/* Vídeo do hero (nítido, travado em 16:9, bordas esfumadas para
-          dissolver no fundo borrado — sem linha de emenda). */}
-      <div className="absolute inset-0 flex -translate-y-[4%] items-center justify-center lg:translate-y-0">
-        <video
-          className="hero-video-mask aspect-video h-auto w-full max-w-none scale-[1.5] object-cover lg:h-full lg:w-auto lg:scale-100"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          aria-hidden="true"
-        >
-          <source src="/hero-video.mp4" type="video/mp4" />
-        </video>
-      </div>
+          dissolver no fundo borrado — sem linha de emenda). Vive num
+          componente próprio porque em conexão lenta ele não é baixado: ver
+          components/HeroVideo.tsx. */}
+      <HeroVideo />
 
       {/* Véu de fumaça — degradês suaves nos cantos, mesclados por cima do
           vídeo (soft-light) para disfarçar qualquer resquício de compressão
