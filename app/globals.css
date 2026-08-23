@@ -407,10 +407,18 @@
     animation: btn-shine-sweep 3.4s ease-in-out infinite;
     pointer-events: none;
   }
+  /* Anima transform, e nunca `left`: `left` obriga o navegador a refazer
+     layout e repintar a cada quadro, e o Lighthouse acusava esta como uma das
+     duas animações não compostas da página. O feixe percorria de -60% a 135%
+     da largura do BOTÃO, ou seja 195% dele; como o elemento mede 35% do
+     botão, a mesma distância em translateX — que resolve contra a largura do
+     PRÓPRIO elemento — são 195/35 = 557%.
+     O skew entra em todos os passos porque a animação substitui o transform
+     da regra; sem repeti-lo o feixe perderia a inclinação ao animar. */
   @keyframes btn-shine-sweep {
-    0% { left: -60%; }
-    22% { left: 135%; }
-    100% { left: 135%; }
+    0%   { transform: translateX(0) skewX(-20deg); }
+    22%  { transform: translateX(557%) skewX(-20deg); }
+    100% { transform: translateX(557%) skewX(-20deg); }
   }
 }
 

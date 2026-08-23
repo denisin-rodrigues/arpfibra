@@ -303,8 +303,23 @@ const Lightfall = ({
       canvas.addEventListener('pointermove', onPointerMove);
     }
 
+    /* O laco so roda com a secao na tela. Antes ele desenhava um shader de
+       tela cheia a 60fps mesmo com o visitante la no rodape, e o Lighthouse
+       apontava 39s de thread principal. Nao ha o que ver fora da vista, entao
+       nao ha o que desenhar.
+
+       Cancelamos o requestAnimationFrame em vez de so pular o render: pular
+       ainda custaria uma chamada por quadro, e o custo aqui e justamente o
+       laco continuo. rafRef vira null para o observer saber que precisa
+       religar, e para nao religar duas vezes se o observer disparar de novo.
+
+       rootMargin generoso: religa um pouco antes de entrar, senao o primeiro
+       quadro visivel apareceria parado. */
+    let naTela = true;
+
     const loop = t => {
       if (contextLost) return;
+      if (!naTela) { rafRef.current = null; return; }
       rafRef.current = requestAnimationFrame(loop);
       uniforms.iTime.value = t * 0.001;
       if (mouseDampening > 0) {
@@ -329,9 +344,22 @@ const Lightfall = ({
         }
       }
     };
+    const io = new IntersectionObserver(
+      ([entrada]) => {
+        naTela = entrada.isIntersecting;
+        if (naTela && rafRef.current === null) {
+          lastTimeRef.current = 0;
+          rafRef.current = requestAnimationFrame(loop);
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    io.observe(container);
+
     rafRef.current = requestAnimationFrame(loop);
 
     return () => {
+      io.disconnect();
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       canvas.removeEventListener('webglcontextlost', onContextLost);
       if (mouseInteraction) canvas.removeEventListener('pointermove', onPointerMove);
