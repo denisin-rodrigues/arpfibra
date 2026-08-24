@@ -46,6 +46,12 @@ export default function ScrollReveal({
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  /* will-change promove o elemento a uma camada própria de composição, e o
+     navegador a MANTÉM enquanto a propriedade estiver lá. Como cada seção tem
+     vários ScrollReveal e a revelação acontece uma única vez, deixar a dica
+     fixa custa memória de GPU para sempre em troca de nada. Solta-se assim que
+     a transição termina. */
+  const [revelado, setRevelado] = useState(false);
 
   useEffect(() => {
     const node = ref.current;
@@ -89,11 +95,20 @@ export default function ScrollReveal({
     opacity: isVisible ? 1 : 0,
     transform: isVisible ? "none" : initialTransform(direction, distance),
     transition: `opacity ${duration}ms ${EASE} ${delay}ms, transform ${duration}ms ${EASE} ${delay}ms`,
-    willChange: "opacity, transform",
+    willChange: revelado ? undefined : "opacity, transform",
   };
 
   return (
-    <div ref={ref} className={className} style={style}>
+    <div
+      ref={ref}
+      className={className}
+      style={style}
+      /* Só a transição DESTE elemento conta: transitionend borbulha, e sem o
+         teste qualquer transição de um filho encerraria a dica cedo demais. */
+      onTransitionEnd={(e) => {
+        if (e.target === e.currentTarget) setRevelado(true);
+      }}
+    >
       {children}
     </div>
   );

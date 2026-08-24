@@ -422,7 +422,12 @@
   }
 }
 
-.split-word { display: inline-block; will-change: transform; }
+/* Sem will-change: eram 58 palavras, ou seja 58 camadas de composição que o
+   navegador segurava para sempre por causa de uma animação que roda uma vez.
+   O GSAP já faz o equivalente sozinho — com force3D "auto" ele promove o
+   elemento durante o tween e o solta ao terminar, que é o comportamento
+   correto para uma dica de otimização. */
+.split-word { display: inline-block; }
 .split-line-mask {
   display: inline-block;
   overflow: hidden;

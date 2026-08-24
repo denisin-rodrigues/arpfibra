@@ -15,14 +15,28 @@ export default function Hero() {
       {/* Fundo quente (visível antes do vídeo carregar) */}
       <div className="absolute inset-0 bg-[radial-gradient(100%_100%_at_50%_20%,#b8541c_0%,#7a3212_55%,#3a1608_100%)]" />
 
-      {/* Preenchimento: imagem estática pré-borrada (downscale + blur + noise
-          via ffmpeg), preenche a tela toda sem emenda. Usar uma imagem em vez
-          de desfocar o vídeo ao vivo evita blocos de compressão ampliados
-          pelo blur do navegador. */}
-      <div
-        aria-hidden
-        className="absolute inset-0 scale-105 bg-cover bg-center"
-        style={{ backgroundImage: "url(/hero-bg-blurred.webp)" }}
+      {/* Preenchimento: imagem estática pré-borrada, preenche a tela toda sem
+          emenda. Usar uma imagem em vez de desfocar o vídeo ao vivo evita
+          blocos de compressão ampliados pelo blur do navegador.
+
+          É um <img> com priority, e não mais um background-image de CSS, por
+          dois motivos. O navegador só descobre um background depois de baixar
+          e casar o CSS; com <img priority> o Next emite um preload e o
+          fetchpriority=high, então ele começa junto com o HTML.
+
+          E o Chrome descarta imagens de entropia muito baixa como candidatas a
+          LCP, por considerá-las placeholder. A versão anterior tinha 5,9 KB em
+          2,07 Mpx = 0,023 bits por pixel, abaixo do corte de 0,05, e por isso
+          o LCP da página caía no <video> lá nos 4,8s. Esta tem 0,080 bpp.
+          Não é truque de métrica: em conexão lenta o vídeo nunca chega, então
+          esta imagem é literalmente a hero que a pessoa vê. */}
+      <Image
+        src="/hero-bg-blurred.webp"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="scale-105 object-cover"
       />
 
       {/* Vídeo do hero (nítido, travado em 16:9, bordas esfumadas para
