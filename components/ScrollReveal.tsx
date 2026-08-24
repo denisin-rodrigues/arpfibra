@@ -46,12 +46,6 @@ export default function ScrollReveal({
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
-  /* will-change promove o elemento a uma camada própria de composição, e o
-     navegador a MANTÉM enquanto a propriedade estiver lá. Como cada seção tem
-     vários ScrollReveal e a revelação acontece uma única vez, deixar a dica
-     fixa custa memória de GPU para sempre em troca de nada. Solta-se assim que
-     a transição termina. */
-  const [revelado, setRevelado] = useState(false);
 
   useEffect(() => {
     const node = ref.current;
@@ -95,7 +89,7 @@ export default function ScrollReveal({
     opacity: isVisible ? 1 : 0,
     transform: isVisible ? "none" : initialTransform(direction, distance),
     transition: `opacity ${duration}ms ${EASE} ${delay}ms, transform ${duration}ms ${EASE} ${delay}ms`,
-    willChange: revelado ? undefined : "opacity, transform",
+    willChange: "opacity, transform",
   };
 
   return (
@@ -103,10 +97,21 @@ export default function ScrollReveal({
       ref={ref}
       className={className}
       style={style}
-      /* Só a transição DESTE elemento conta: transitionend borbulha, e sem o
-         teste qualquer transição de um filho encerraria a dica cedo demais. */
+      /* will-change promove o elemento a uma camada de composição que o
+         navegador MANTÉM enquanto a propriedade existir. A revelação roda uma
+         vez só, então a dica é solta ao fim da transição.
+
+         Escrito direto no DOM, e NÃO por estado do React. Com estado, cada um
+         dos ~45 ScrollReveal da página re-renderizava ao terminar de animar —
+         duas vezes, porque transitionend dispara para opacity e para transform.
+         Medido: custava mais CPU do que a memória que economizava.
+
+         O teste de target é porque transitionend borbulha: sem ele, a
+         transição de qualquer filho encerraria a dica cedo demais. */
       onTransitionEnd={(e) => {
-        if (e.target === e.currentTarget) setRevelado(true);
+        if (e.target === e.currentTarget) {
+          e.currentTarget.style.willChange = "auto";
+        }
       }}
     >
       {children}
