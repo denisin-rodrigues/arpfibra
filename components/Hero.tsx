@@ -24,12 +24,20 @@ export default function Hero() {
           e casar o CSS; com <img priority> o Next emite um preload e o
           fetchpriority=high, então ele começa junto com o HTML.
 
-          E o Chrome descarta imagens de entropia muito baixa como candidatas a
-          LCP, por considerá-las placeholder. A versão anterior tinha 5,9 KB em
-          2,07 Mpx = 0,023 bits por pixel, abaixo do corte de 0,05, e por isso
-          o LCP da página caía no <video> lá nos 4,8s. Esta tem 0,080 bpp.
-          Não é truque de métrica: em conexão lenta o vídeo nunca chega, então
-          esta imagem é literalmente a hero que a pessoa vê. */}
+          O borrão é FORTE de propósito. A imagem é um quadro do próprio
+          vídeo, e no mobile o vídeo (16:9) ocupa só a faixa do meio de uma
+          tela alta — o resto é esta imagem. Com object-cover numa tela
+          estreita, o recorte que sobra é justamente a coluna central, que
+          contém o personagem: numa versão pouco borrada a cena reaparecia
+          embaixo e parecia um reflexo do vídeo. Com sigma 45 sobra só a
+          mancha de cor, que é a única função dela aqui.
+
+          O borrão forte também derruba a entropia, e o Chrome descarta
+          imagens abaixo de 0,05 bits por pixel como candidatas a LCP, por
+          tratá-las como placeholder. Esta fica em 0,061 — passa raspando, e
+          de todo modo o LCP da página não é ela: é texto. O ganho real de
+          trocar background-image por <img priority> veio do preload, que
+          baixou o FCP de 1,7s para 1,3s. */}
       <Image
         src="/hero-bg-blurred.webp"
         alt=""
