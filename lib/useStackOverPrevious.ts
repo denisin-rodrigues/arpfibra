@@ -41,6 +41,32 @@ export function useStackOverPrevious(ref: RefObject<HTMLElement | null>) {
       : sibling;
     if (!prev) return;
 
+    /* Terminado o pin, a seção coberta some.
+
+       Sem isso ela reaparece por baixo: com pinSpacing false as duas ocupam o
+       MESMO espaço do documento, e quando a de baixo é mais alta que a que
+       cobre, a diferença fica sobrando embaixo. Aconteceu aqui — Positioning
+       tem 871px contra 662px do Manifesto, e vazavam 248px, o suficiente para
+       um card inteiro aparecer depois da faixa laranja.
+
+       Igualar as alturas resolveria, mas amarraria o desenho de uma seção ao
+       conteúdo da outra: bastaria alguém escrever mais uma linha para o
+       defeito voltar. Apagar não depende de altura nenhuma.
+
+       opacity, e não visibility: visibility hidden tira o trecho da árvore de
+       acessibilidade, e o conteúdo continua sendo texto legítimo que um
+       leitor de tela percorre linearmente, sem depender de onde a página
+       está rolada. */
+    /* Guarda o último valor para não reescrever o style a cada quadro: o
+       onUpdate abaixo roda a cada rolagem, e atribuir sempre sujaria o CSSOM
+       sem necessidade. */
+    let visivelAtual: boolean | null = null;
+    const mostrar = (visivel: boolean) => {
+      if (visivel === visivelAtual) return;
+      visivelAtual = visivel;
+      prev.style.opacity = visivel ? "" : "0";
+    };
+
     const st = ScrollTrigger.create({
       trigger: sec,
       start: "top bottom",
@@ -48,8 +74,21 @@ export function useStackOverPrevious(ref: RefObject<HTMLElement | null>) {
       pin: prev,
       pinSpacing: false,
       anticipatePin: 1,
+      onLeave: () => mostrar(false),
+      onEnterBack: () => mostrar(true),
+      /* Os callbacks acima só disparam ao CRUZAR o limite. Quem chega à
+         página já rolado para baixo (link com âncora, recarregar no meio,
+         voltar do navegador) nunca cruzaria, e a seção ficaria vazando. O
+         refresh acerta o estado pelo progresso atual. */
+      onRefresh: (self) => mostrar(self.progress < 1),
+      /* Fecha o caso do salto: onLeave e onEnterBack só disparam ao CRUZAR o
+         limite rolando, e um link de âncora pula por cima deles. */
+      onUpdate: (self) => mostrar(self.progress < 1),
     });
 
-    return () => st.kill();
+    return () => {
+      mostrar(true);
+      st.kill();
+    };
   }, [ref]);
 }

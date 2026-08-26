@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Icon } from "@iconify/react";
 import { SplitHeading, Reveal } from "./Reveal";
+import ScrollReveal from "./ScrollReveal";
 import { site, anosDeMercado } from "@/lib/site";
 
 /* O número NÃO é escrito à mão: sai de site.fundacao. Texto com "13 anos"
@@ -67,8 +68,18 @@ export default function Presenca() {
           </Reveal>
         </div>
 
-        {/* ---------- Fachada ---------- */}
-        <Reveal className="relative">
+        {/* ---------- Fachada ----------
+            Entra deslizando da direita para a esquerda. No ScrollReveal o
+            nome da direção é o SENTIDO DO MOVIMENTO, não a borda de onde a
+            peça vem: "left" desloca para a esquerda, ou seja, começa
+            afastada à direita. Distância maior que o padrão porque a foto é
+            grande e 40px passariam despercebidos nela. */}
+        <ScrollReveal
+          direction="left"
+          distance="90px"
+          duration={900}
+          className="relative"
+        >
           <div className="relative overflow-hidden rounded-[2rem] border border-line">
             <Image
               src="/fachada.webp"
@@ -79,7 +90,7 @@ export default function Presenca() {
               className="h-auto w-full"
             />
           </div>
-        </Reveal>
+        </ScrollReveal>
       </div>
 
       {/* ---------- O que a ARP devolve para a região ---------- */}
