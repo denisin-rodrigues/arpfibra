@@ -7,16 +7,20 @@ export const site = {
   phone0800: "0800 042 0623",
   phoneCell: "(62) 99900-7153",
   whatsapp: "https://wa.me/5562999007153",
-  /* ---------------------------------------------------------------
-     TROQUE AQUI quando os endereços reais chegarem. São os DOIS únicos
-     pontos do site: a Central aparece em 5 lugares (Central, Rodapé x2,
-     Suporte) e todos leem daqui.
-     Hoje apontam para central.arpfibra.com.br, que NÃO resolve — o
-     domínio arpfibra.com.br não está registrado, então esses botões
-     estão quebrados para todos os visitantes.
-     --------------------------------------------------------------- */
-  central: "https://central.arpfibra.com.br",
-  boleto: "https://central.arpfibra.com.br",
+  /* Central do Assinante e 2ª via saem do mesmo portal (SGP). É daqui que
+     os 5 pontos do site leem: Central, Rodapé (x2) e Suporte. */
+  central: "https://arpfibra.sgp.net.br/accounts/central/login",
+  boleto: "https://arpfibra.sgp.net.br/accounts/central/login",
+
+  /* Aplicativo. O pacote Android e o bundle da App Store são o mesmo
+     (br.com.appdoprovedor.arptelecom), o que confirma que são a mesma
+     peça — o link de iOS informado apontava para o Google Play por
+     engano, e foi corrigido pelo id real da Apple. */
+  app: {
+    android:
+      "https://play.google.com/store/apps/details?id=br.com.appdoprovedor.arptelecom",
+    ios: "https://apps.apple.com/br/app/arp-telecom/id1572114693",
+  },
   instagram: "https://instagram.com/arpfibra",
   address: {
     street: "Rua 21 de Abril — Centro",

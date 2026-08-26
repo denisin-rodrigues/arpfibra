@@ -9,6 +9,7 @@ import ArpMovel from "@/components/ArpMovel";
 import Presenca from "@/components/Presenca";
 import Wifi6 from "@/components/Wifi6";
 import Central from "@/components/Central";
+import Aplicativo from "@/components/Aplicativo";
 import Support from "@/components/Support";
 import Faq from "@/components/Faq";
 import SocialProof from "@/components/SocialProof";
@@ -40,6 +41,10 @@ export default function Home() {
         <ArpMovel />
         <Wifi6 />
         <Central />
+        {/* Logo depois da Central: as duas resolvem a mesma necessidade
+            (fatura, suporte, contrato), uma pelo navegador e outra pelo
+            celular. Quem não se resolveu ali tem o app na sequência. */}
+        <Aplicativo />
         <Support />
         <Faq />
         {/* Antes do SocialProof de propósito: o FinalCta desliza por cima da
