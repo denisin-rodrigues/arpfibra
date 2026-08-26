@@ -276,14 +276,27 @@ export default function FramedVideo() {
               volta de 52vh, entao os pes entram uns poucos px na curvatura —
               e o que faz parecer pouso, e nao flutuacao solta. Esfera e
               mascote usam a mesma unidade (vh), entao a relacao se mantem em
-              qualquer tela. */}
-          <div data-parallax="48" className="absolute inset-x-0 bottom-[50vh] mx-auto w-[60%] max-w-[300px] lg:w-[34%] lg:max-w-[470px]">
+              qualquer tela.
+
+              As larguras cairam de 60%/34% para 36%/18% porque a arte trocou
+              de paisagem (760x506) para retrato (640x960). Na mesma largura
+              a peca ficaria 2,25x mais alta e subiria ate os icones do topo;
+              o que importa aqui e a ALTURA na tela, nao a largura. Como a
+              ancora e bottom, os pes seguem no mesmo ponto e o texto de fundo
+              do mobile, calibrado para ficar abaixo deles, continua valendo. */}
+          <div data-parallax="48" className="absolute inset-x-0 bottom-[50vh] mx-auto w-[36%] max-w-[170px] lg:w-[18%] lg:max-w-[250px]">
             <Image
-              src="/astronauta.webp"
+              /* Nome novo de proposito. O arquivo trocou de paisagem para
+                 retrato, e o otimizador de imagem indexa pela URL: mantendo
+                 /astronauta.webp, tanto o cache local quanto a CDN da Vercel
+                 continuariam servindo variantes ja geradas da arte ANTIGA,
+                 numa proporcao que quebra o enquadramento. Aconteceu aqui no
+                 mobile, que renderizou 135x90 em vez de 135x202. */
+              src="/astronauta-robo.webp"
               alt=""
-              width={760}
-              height={506}
-              className="w-full "
+              width={640}
+              height={960}
+              className="w-full"
             />
           </div>
         </div>
