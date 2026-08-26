@@ -2,7 +2,7 @@
 
 import { Icon } from "@iconify/react";
 import { SplitHeading, Reveal } from "./Reveal";
-import { site } from "@/lib/site";
+import { whatsappCom } from "@/lib/site";
 
 type Combo = {
   id: string;
@@ -13,6 +13,10 @@ type Combo = {
   bonus?: string;
   features: string[];
   cta: string;
+  /* Mensagem que já vai digitada no WhatsApp. Cada plano tem a sua: quem
+     clica cai na conversa dizendo qual plano quer, sem precisar explicar,
+     e quem atende recebe o contato já qualificado. */
+  mensagem: string;
   featured?: boolean;
   social?: boolean;
 };
@@ -26,6 +30,7 @@ const combos: Combo[] = [
     altPrice: "Para famílias de baixa renda",
     features: ["Treino ilimitado (Fit Anywhere)", "Livros e leitura ilimitada (Bibliotech)"],
     cta: "Consultar elegibilidade",
+    mensagem: "Olá, quero contratar o plano social da ARP Fibra.",
     social: true,
   },
   {
@@ -36,6 +41,7 @@ const combos: Combo[] = [
     altPrice: "R$ 159,90 sem fidelidade",
     bonus: "Bônus: Filmes, séries e canais (ITTV Total)",
     features: [
+      "Dados móveis inclusos (ARP Móvel)",
       "Roteador Wi-Fi 6 em comodato + assistência (ARP-Service)",
       "Leitura ilimitada (Bibliotech)",
       "Treino ilimitado (Fit Anywhere)",
@@ -43,6 +49,8 @@ const combos: Combo[] = [
       "Cursos com certificado (Leveduca)",
     ],
     cta: "Quero esse combo",
+    mensagem:
+      "Olá, quero contratar o Combo 800 Mega da ARP Fibra, com dados móveis da ARP Móvel.",
   },
   {
     id: "2giga",
@@ -60,6 +68,7 @@ const combos: Combo[] = [
       "Cursos com certificado (Leveduca)",
     ],
     cta: "Quero 2 Giga",
+    mensagem: "Olá, quero contratar o Combo 2 Giga da ARP Fibra.",
     featured: true,
   },
 ];
@@ -175,7 +184,7 @@ export default function Combos() {
               </ul>
 
               <a
-                href={site.whatsapp}
+                href={whatsappCom(c.mensagem)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`btn btn-sm mt-auto w-full ${c.featured ? "btn-primary" : "btn-ghost"}`}

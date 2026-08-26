@@ -4,6 +4,9 @@ import FramedVideo from "@/components/FramedVideo";
 import Positioning from "@/components/Positioning";
 import Manifesto from "@/components/Manifesto";
 import Combos from "@/components/Combos";
+import Beneficios from "@/components/Beneficios";
+import ArpMovel from "@/components/ArpMovel";
+import Presenca from "@/components/Presenca";
 import Wifi6 from "@/components/Wifi6";
 import Central from "@/components/Central";
 import Support from "@/components/Support";
@@ -26,7 +29,15 @@ export default function Home() {
         <FramedVideo />
         <Positioning />
         <Manifesto />
+        {/* Credibilidade ANTES do preço: os anos de casa e o que a ARP
+            devolve para a região pesam mais lidos antes da tabela de
+            planos do que depois dela. */}
+        <Presenca />
         <Combos />
+        {/* Logo depois dos planos: os dois respondem "o que mais vem
+            junto?", pergunta que a tabela de preços acabou de abrir. */}
+        <Beneficios />
+        <ArpMovel />
         <Wifi6 />
         <Central />
         <Support />
