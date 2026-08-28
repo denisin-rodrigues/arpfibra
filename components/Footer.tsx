@@ -27,7 +27,7 @@ const localBusiness = {
   telephone: ["0800 042 0623", "+55 62 99900-7153"],
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Rua 21 de Abril — Centro",
+    streetAddress: "Rua 21 de Abril, Centro",
     addressLocality: "Mambaí",
     addressRegion: "GO",
     addressCountry: "BR",

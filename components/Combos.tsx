@@ -126,7 +126,7 @@ export default function Combos() {
           />
           <Reveal as="p" className="mt-5 text-lg leading-relaxed text-text-dim">
             Fibra de alta velocidade unida a streaming, treino, leitura, música e
-            cursos — tudo em um único plano, sem fidelidade.
+            cursos. Tudo em um único plano, sem fidelidade.
           </Reveal>
         </div>
 

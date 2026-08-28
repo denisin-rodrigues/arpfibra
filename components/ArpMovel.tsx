@@ -139,7 +139,7 @@ export default function ArpMovel() {
             <Reveal as="p" className="mt-6 max-w-xl text-lg leading-relaxed text-text-dim">
               A partir de{" "}
               <span className="font-semibold text-text">800 mega</span>, os
-              planos vêm com dados móveis para usar onde você quiser — e tudo
+              planos vêm com dados móveis para usar onde você quiser, e tudo
               chega junto na sua fatura de internet.{" "}
               <span className="font-semibold text-text">
                 Wi-Fi e dados móveis num plano só.

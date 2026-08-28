@@ -23,8 +23,8 @@ export const site = {
   },
   instagram: "https://instagram.com/arpfibra",
   address: {
-    street: "Rua 21 de Abril — Centro",
-    city: "Mambaí — GO",
+    street: "Rua 21 de Abril, Centro",
+    city: "Mambaí, GO",
   },
   hours: {
     week: "Segunda a sexta · 08h às 18h",

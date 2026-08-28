@@ -22,7 +22,7 @@ const SITE_URL = "https://arpfibra.com.br";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "ARP Fibra — Internet de fibra óptica para o seu dia a dia",
+    default: "ARP Fibra | Internet de fibra óptica para o seu dia a dia",
     template: "%s | ARP Fibra",
   },
   description:
@@ -41,13 +41,13 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     url: SITE_URL,
     siteName: "ARP Fibra",
-    title: "ARP Fibra — Sua vida acontece rápido. Sua internet também deveria.",
+    title: "ARP Fibra | Sua vida acontece rápido. Sua internet também deveria.",
     description:
       "Fibra óptica de alta performance para sua casa e empresa. Planos ilimitados, Wi-Fi 6 e suporte ARP.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ARP Fibra — Internet de fibra óptica",
+    title: "ARP Fibra | Internet de fibra óptica",
     description:
       "Fibra óptica de alta performance para sua casa e empresa. Planos ilimitados e suporte próximo.",
   },

@@ -95,7 +95,7 @@ export default function Aplicativo() {
             delay={0.15}
           />
           <Reveal as="p" className="mt-6 max-w-xl text-lg leading-relaxed text-text-dim">
-            Fatura, teste de velocidade, suporte e contrato — tudo no mesmo
+            Fatura, teste de velocidade, suporte e contrato. Tudo no mesmo
             lugar, sem precisar ligar para ninguém.
           </Reveal>
 

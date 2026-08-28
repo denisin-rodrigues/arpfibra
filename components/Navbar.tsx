@@ -50,7 +50,7 @@ export default function Navbar() {
         <a
           href="#top"
           className="relative flex items-center rounded-lg"
-          aria-label="ARP Fibra — início"
+          aria-label="ARP Fibra, início"
         >
           <Image
             src="/logo-arp.png"
