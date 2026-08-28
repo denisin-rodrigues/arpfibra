@@ -211,7 +211,12 @@ const Lightfall = ({
     let renderer;
     try {
       renderer = new Renderer({
-        dpr: dpr ?? (typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1),
+        /* Densidade LIMITADA a 1.5. Sem o teto, uma tela de dpr 2 fazia o
+           shader de tela cheia rodar em 4x mais pixels, e de dpr 3 em 9x —
+           num efeito que e um degrade difuso, onde essa resolucao extra nao
+           aparece. Foi um dos itens que travavam maquinas boas junto com o
+           desfoque progressivo. */
+        dpr: dpr ?? (typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 1.5) : 1),
         alpha: true,
         antialias: true
       });
