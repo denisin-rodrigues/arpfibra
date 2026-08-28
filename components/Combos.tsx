@@ -109,10 +109,19 @@ function RouterSignalBadge({ invert = false }: { invert?: boolean }) {
 export default function Combos() {
   return (
     <section id="combos" className="relative scroll-mt-24 overflow-hidden bg-bg-elev py-28 sm:py-36">
+      {/* Brilho de marca. Era este mesmo degradê com um blur(120px) por
+          cima: redundante, porque um degradê radial JÁ é suave, e caro,
+          porque obriga o navegador a rasterizar a peça num buffer separado
+          para desfocar. Pior, o desfoque sobre um degradê produzia anéis
+          concêntricos visíveis. Agora a suavidade vem só das paradas de cor,
+          e a peça cresce para cobrir a área que o desfoque espalhava. */}
       <div
         aria-hidden
-        className="absolute right-0 top-0 h-96 w-96 rounded-full opacity-30 blur-[120px]"
-        style={{ background: "radial-gradient(circle, rgba(255,90,30,0.5), rgba(255,90,30,0) 70%)" }}
+        className="absolute -right-32 -top-32 h-[39rem] w-[39rem] rounded-full opacity-30"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(255,90,30,0.36) 0%, rgba(255,90,30,0.19) 38%, rgba(255,90,30,0) 72%)",
+        }}
       />
       <div className="relative mx-auto max-w-6xl px-5">
         <div className="mb-14 max-w-2xl">

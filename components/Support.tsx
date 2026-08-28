@@ -7,10 +7,16 @@ import { site } from "@/lib/site";
 export default function Support() {
   return (
     <section className="relative overflow-hidden bg-bg-elev py-28 sm:py-36">
+      {/* Mesmo caso do brilho da seção de combos: o blur(130px) sobre um
+          degradê radial era redundante e caro. A margem negativa mantém o
+          centro no mesmo ponto agora que a peça é maior. */}
       <div
         aria-hidden
-        className="absolute left-1/4 top-1/2 h-80 w-80 -translate-y-1/2 rounded-full opacity-25 blur-[130px]"
-        style={{ background: "radial-gradient(circle, rgba(255,90,30,0.6), rgba(255,90,30,0) 70%)" }}
+        className="absolute left-1/4 top-1/2 -ml-32 h-[36rem] w-[36rem] -translate-y-1/2 rounded-full opacity-25"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(255,90,30,0.44) 0%, rgba(255,90,30,0.23) 38%, rgba(255,90,30,0) 72%)",
+        }}
       />
       <div className="relative mx-auto max-w-4xl px-5 text-center">
         <Reveal as="p" className="text-eyebrow mb-5 text-orange">
