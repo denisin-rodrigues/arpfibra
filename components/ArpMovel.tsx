@@ -5,34 +5,93 @@ import { SplitHeading, Reveal } from "./Reveal";
 import { whatsappCom } from "@/lib/site";
 
 /* Chip em SVG, e não uma foto. O usuário pediu ícone por enquanto; quando a
-   foto do chip chegar, é só trocar este bloco por um <Image>. Feito à mão em
-   vez de vir da biblioteca de ícones porque o contorno com os contatos
-   dourados é reconhecível de imediato como "chip de celular", e nenhum ícone
-   genérico de SIM passa isso no tamanho grande que a seção usa. */
+   foto do chip chegar, é só trocar este bloco por um <Image>.
+
+   O acabamento é metálico de propósito, para conversar com os ícones 3D do
+   resto do site em vez de parecer um pictograma chapado: gradiente com
+   várias paradas simulando a reflexão do ouro, bisel claro na borda de cima
+   e escuro na de baixo (é o que cria a leitura de volume), e as separações
+   dos contatos como VÃOS escuros, que é o que existe num chip real — não
+   como riscos desenhados por cima. */
 function Chip() {
   return (
-    <svg viewBox="0 0 120 96" className="h-auto w-full max-w-[220px]" aria-hidden>
+    <svg
+      viewBox="0 0 220 176"
+      className="h-auto w-full max-w-[300px] drop-shadow-[0_18px_30px_rgba(120,60,10,0.35)]"
+      aria-hidden
+    >
       <defs>
-        <linearGradient id="chipOuro" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#f8c76a" />
-          <stop offset="50%" stopColor="#e0952f" />
-          <stop offset="100%" stopColor="#b9701c" />
+        {/* Ouro do corpo. As paradas não são um degradê linear simples: o
+            claro no meio e o escuro nas pontas é o que o olho lê como
+            superfície curva refletindo luz. */}
+        <linearGradient id="chipCorpo" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#c8811f" />
+          <stop offset="18%" stopColor="#f6cf7a" />
+          <stop offset="42%" stopColor="#e8a83c" />
+          <stop offset="62%" stopColor="#f9dc96" />
+          <stop offset="85%" stopColor="#d08d24" />
+          <stop offset="100%" stopColor="#a9660f" />
         </linearGradient>
+        {/* Brilho que corre na diagonal, por cima de tudo */}
+        <linearGradient id="chipBrilho" x1="0" y1="0" x2="1" y2="0.6">
+          <stop offset="0%" stopColor="#fff" stopOpacity="0" />
+          <stop offset="38%" stopColor="#fff" stopOpacity="0.55" />
+          <stop offset="52%" stopColor="#fff" stopOpacity="0" />
+          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
+        </linearGradient>
+        {/* Recorta o brilho no formato do chip, senão ele vazaria para fora
+            das bordas e do canto chanfrado. */}
+        <clipPath id="chipRecorte">
+          <path d="M14 6 h150 l42 40 v118 a10 10 0 0 1 -10 10 H14 a10 10 0 0 1 -10 -10 V16 a10 10 0 0 1 10 -10 z" />
+        </clipPath>
       </defs>
-      {/* Corpo do chip, com o canto chanfrado que todo SIM tem */}
+
+      {/* Corpo, com o canto chanfrado que todo chip tem */}
       <path
-        d="M8 4 h84 l20 20 v68 a4 4 0 0 1 -4 4 H8 a4 4 0 0 1 -4 -4 V8 a4 4 0 0 1 4 -4 z"
-        fill="url(#chipOuro)"
+        d="M14 6 h150 l42 40 v118 a10 10 0 0 1 -10 10 H14 a10 10 0 0 1 -10 -10 V16 a10 10 0 0 1 10 -10 z"
+        fill="url(#chipCorpo)"
       />
-      {/* Trilhas de contato */}
-      <g stroke="#8a4f12" strokeWidth="2.5" opacity="0.65" fill="none">
-        <path d="M40 4 v88" />
-        <path d="M76 4 v88" />
-        <path d="M4 34 h34" />
-        <path d="M78 34 h34" />
-        <path d="M4 62 h34" />
-        <path d="M78 62 h34" />
-        <rect x="44" y="30" width="28" height="36" rx="6" />
+
+      {/* Vãos entre os contatos. Escuros e largos: num chip real são sulcos,
+          e é a sombra dentro deles que dá a sensação de relevo.
+
+          O grupo é recortado no contorno do chip. Sem isso as pontas
+          arredondadas dos traços que encostam nas bordas apareciam como
+          saliências para FORA do corpo, e o chip ganhava nós nas laterais. */}
+      <g
+        clipPath="url(#chipRecorte)"
+        stroke="#6b3d08"
+        strokeOpacity="0.72"
+        strokeWidth="7"
+        fill="none"
+        strokeLinecap="round"
+      >
+        <path d="M70 6 V64" />
+        <path d="M70 112 V174" />
+        <path d="M150 46 V64" />
+        <path d="M150 112 V174" />
+        <path d="M4 64 H70" />
+        <path d="M150 64 H206" />
+        <path d="M4 112 H70" />
+        <path d="M150 112 H206" />
+      </g>
+
+      {/* Contato central, o retângulo que fica no miolo */}
+      <rect
+        x="78" y="72" width="64" height="32" rx="9"
+        fill="none" stroke="#6b3d08" strokeOpacity="0.72" strokeWidth="7"
+      />
+
+      {/* Bisel: linha clara na borda de cima e escura na de baixo. É o par
+          claro/escuro que o olho interpreta como espessura. */}
+      <path
+        d="M14 6 h150 l42 40 v118 a10 10 0 0 1 -10 10 H14 a10 10 0 0 1 -10 -10 V16 a10 10 0 0 1 10 -10 z"
+        fill="none" stroke="#fff2cf" strokeOpacity="0.55" strokeWidth="2.5"
+      />
+
+      {/* Reflexo diagonal */}
+      <g clipPath="url(#chipRecorte)">
+        <rect x="-40" y="-40" width="300" height="260" fill="url(#chipBrilho)" />
       </g>
     </svg>
   );
