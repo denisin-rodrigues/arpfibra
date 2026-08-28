@@ -3,6 +3,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
+/* Importado aqui, e nao numa pagina, porque a Navbar e o primeiro
+   componente de cliente da arvore: garante que a colecao esteja
+   registrada antes de qualquer <Icon> renderizar. Ver lib/icones.ts. */
+import "@/lib/icones";
 import { site } from "@/lib/site";
 
 export default function Navbar() {

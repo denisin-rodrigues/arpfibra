@@ -60,7 +60,7 @@ export default function SocialProof() {
             className="border-gradient relative flex flex-col gap-5 rounded-3xl p-8"
           >
             <Icon
-              icon="solar:quote-up-bold"
+              icon="solar:chat-square-2-bold"
               className="absolute right-7 top-7 text-4xl text-orange/15"
               aria-hidden
             />
